@@ -1,5 +1,6 @@
 local Packer = {}
 local log = require('utility.logger')
+local uv = vim.loop
 
 local nvim_data_path = vim.fn.stdpath('data') .. '/site'
 local default_compiled = nvim_data_path .. '/lua/_compiled.lua'
@@ -37,21 +38,21 @@ local plugins = setmetatable({}, {
     end,
 })
 
-Packer.bootstrap = function()
-    Packer.manager = {
-        name = 'packer',
-        path = vim.fn.stdpath('data') .. '/site/pack/packer/opt/packer.nvim',
-        status = false,
-        repo = 'wbthomason/packer.nvim',
-    }
+Packer.manager = {
+    name = 'packer',
+    path = vim.fn.stdpath('data') .. '/site/pack/packer/opt/packer.nvim',
+    status = false,
+    repo = 'wbthomason/packer.nvim',
+}
 
-    if vim.fn.empty(vim.fn.glob(Packer.manager.path)) > 0 then
+Packer.bootstrap = function()
+    if uv.fs_stat(Packer.manager.path) == nil then
         local ret = vim.fn.system({
             'git',
             'clone',
             '--depth',
             '1',
-            string.format('https://github.com/%s', Packer.manager.repo),
+            string.format('git@github.com:%s', Packer.manager.repo),
             Packer.manager.path,
         })
 
@@ -84,7 +85,7 @@ Packer.setup = function()
         end
     end
 
-    vim.cmd([[ packadd packer.nvim ]])
+    vim.api.nvim_command('packadd packer.nvim')
 
     packer = require(Packer.manager.name)
     packer.init({
@@ -97,15 +98,15 @@ Packer.setup = function()
                 })
             end,
         },
+        git = {
+            clone_timeout = 60,
+            default_url_format = 'git@github.com:%s',
+        },
     })
 
     packer.reset()
 
     loading(packer.use)
-    -- use `nvim +PackerSync` to install/update/reconfigure plugins, instead of following statements
-    -- packer.install()
-    -- packer.compile()
-    -- vim.api.nvim_command([[autocmd! User PackerCompileDone lua require('_compiled') ]])
 end
 
 plugins.setup = function()
