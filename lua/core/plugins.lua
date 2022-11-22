@@ -6,6 +6,9 @@ local nvim_data_path = vim.fn.stdpath('data') .. '/site'
 local default_compiled = nvim_data_path .. '/lua/_compiled.lua'
 local packer = nil
 
+local use_ssh = vim.env['USE_SSH_TO_GITHUB'] ~= nil
+local url_scheme = use_ssh and 'git@github.com:%s' or 'https://github.com/%s'
+
 local disable_distribution_plugins = function()
     vim.g.loaded_fzf = 1
     vim.g.loaded_gtags = 1
@@ -52,7 +55,7 @@ Packer.bootstrap = function()
             'clone',
             '--depth',
             '1',
-            string.format('git@github.com:%s', Packer.manager.repo),
+            string.format(url_scheme, Packer.manager.repo),
             Packer.manager.path,
         })
 
@@ -100,7 +103,7 @@ Packer.setup = function()
         },
         git = {
             clone_timeout = 60,
-            default_url_format = 'git@github.com:%s',
+            default_url_format = url_scheme,
         },
     })
 
