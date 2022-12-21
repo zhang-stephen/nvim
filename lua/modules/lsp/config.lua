@@ -253,7 +253,7 @@ function config.cmp()
             { name = 'orgmode' },
             { name = 'buffer' },
             { name = 'latex_symbols' },
-            { name = 'copilot' },
+            -- { name = 'copilot' },
             -- { name = "cmp_tabnine" },
         },
     })
