@@ -288,7 +288,7 @@ config.alpha = function()
 
     -- Set menu, telescope.nvim required
     dashboard.section.buttons.val = {
-        button('f', '  > Find file', ':cd ~ | Telescope find_files<CR>'),
+        button('f', '  > Find file', 'Telescope find_files<CR>'),
         button('r', '  > Recent', ':Telescope oldfiles<CR>'),
         button('n', '  > Notifations', ':Telescope notify<CR>'),
         button('x', '  > Git Status', ':Telescope git_status<CR>'),

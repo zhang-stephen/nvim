@@ -22,8 +22,9 @@ local mappings = {
                     r = { '<cmd>Lspsaga rename<cr>', 'Rename symbol under cursor' },
                     w = { '<cmd>TroubleToggle lsp_workspace_diagnostics<cr>', 'Show all diagnostics in workspace' },
                 },
+                e = {'<cmd>NvimTreeToggle<cr>', 'Toggle File Explorer'},
                 h = { name = '+gitsigns' },
-                o = { '<cmd>Lspsaga outline<cr>', 'Toggle outline window powered by lspsaga' },
+                o = { '<cmd>Lspsaga outline<cr>', 'Toggle lspsaga outline' },
                 p = {
                     name = '+Packer.nvim',
                     c = { '<cmd>PackerClean<cr>', 'Remove all plugins' },
@@ -67,8 +68,7 @@ keymap.setup = function()
         return
     end
 
-    -- use the default mapleader
-    -- vim.g.mapleader = ' ' -- use <space> as default leader
+    vim.g.mapleader = ' ' -- use <space> as default leader
 
     local wk = require('which-key')
 

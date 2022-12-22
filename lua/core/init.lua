@@ -3,7 +3,7 @@ local core = {
         require('core.options'),
         require('core.plugins'),
         require('core.keymap'),
-        -- require('core.event'),
+        require('core.event'),
     },
 }
 
