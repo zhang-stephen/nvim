@@ -2,7 +2,7 @@ local core = {
     config = {
         require('core.options'),
         require('core.plugins'),
-        -- require('core.keymap'),
+        require('core.keymap'),
         -- require('core.event'),
     },
 }

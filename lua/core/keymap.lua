@@ -14,35 +14,42 @@ local mappings = {
             },
             ['<leader>'] = {
                 c = {
-                    a = { '<cmd>Lspsaga code_action', 'Code action' },
+                    name = '+Code Actions',
+                    a = { '<cmd>Lspsaga code_action<cr>', 'Code action' },
+                    d = {'<cmd>TroubleToggle lsp_document_diagnostics<cr>', 'Show all diagnostics in current buffer'},
+                    l = {'<cmd>TroubleToggle loclist<cr>', 'unknown'},
+                    q = {'<cmd>TroubleToggle quickfix<cr>', 'Show quickfix'},
+                    r = { '<cmd>Lspsaga rename<cr>', 'Rename symbol under cursor' },
+                    w = {'<cmd>TroubleToggle lsp_workspace_diagnostics<cr>', 'Show all diagnostics in workspace'},
                 },
                 h = { name = '+gitsigns' },
                 o = { '<cmd>Lspsaga outline<cr>', 'Toggle outline window powered by lspsaga' },
                 p = {
                     name = '+Packer.nvim',
-                    s = { '<cmd>PackerSync<cr>', 'Upgrade & re-configure all plugins' },
-                    i = { '<cmd>PackerInstall<cr>', 'Install new plugins' },
-                    u = { '<cmd>PackerUpdate<cr>', 'Update packer.nvim itself' },
                     c = { '<cmd>PackerClean<cr>', 'Remove all plugins' },
-                },
-                r = {
-                    n = { '<cmd>Lspsaga rename', 'Rename symbol under cursor' },
+                    i = { '<cmd>PackerInstall<cr>', 'Install new plugins' },
+                    s = { '<cmd>PackerSync<cr>', 'Upgrade & re-configure all plugins' },
+                    u = { '<cmd>PackerUpdate<cr>', 'Update packer.nvim itself' },
                 },
                 t = {
                     name = '+Telescope',
                 },
             },
+            ['<F10>'] = {'<cmd>ccl<cr>', 'Close QuickFix window'},
             g = {
                 name = '+goto',
                 ['['] = { '<cmd>Lspsaga diagnostic_jump_prev<cr>', 'Goto previous diagnostic' },
                 [']'] = { '<cmd>Lspsaga diagnostic_jump_next<cr>', 'Goto next diagnostic' },
-                d = { '<cmd>lua vim.lsp.buf.definition()<cr>', 'Goto definition under cursor' },
-                s = { '<cmd>Lspsaga signature_help<cr>', 'Show help of function under cursor' },
-                p = { '<cmd>Lspsaga peek_definition<cr>', 'Preview defintion under cursor' },
-                t = { '<cmd>TroubleToggle<cr>', 'Show all diagnostics of current buffer' },
-                r = { '<cmd>TroubleToggle lsp_references<cr>', 'Show reference list of symbol under cursor' },
                 b = { '<cmd>BufferLinePick<cr>', 'unknown' },
+                d = { '<cmd>lua vim.lsp.buf.definition()<cr>', 'Goto definition under cursor' },
+                p = { '<cmd>Lspsaga peek_definition<cr>', 'Preview defintion under cursor' },
+                r = { '<cmd>TroubleToggle lsp_references<cr>', 'Show reference list of symbol under cursor' },
+                s = { '<cmd>Lspsaga signature_help<cr>', 'Show help of function under cursor' },
+                t = { '<cmd>TroubleToggle<cr>', 'Show all diagnostics of current buffer' },
             },
+            D = {'d$', 'Delete to EOL'},
+            Y = {'y$', 'Yank to EOL'},
+
         },
         opt = { mode = 'n' },
     },
@@ -60,6 +67,9 @@ keymap.setup = function()
         vim.notify('WRN: which-key.nvim not found, keymap initialize failed!')
         return
     end
+
+    -- use the default mapleader
+    -- vim.g.mapleader = ' ' -- use <space> as default leader
 
     local wk = require('which-key')
 

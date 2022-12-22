@@ -97,6 +97,7 @@ for _, server in ipairs(mason_lsp.get_installed_servers()) do
                 'clangd',
                 '--background-index',
                 '--pch-storage=memory',
+                '-j=12',
                 -- You MUST set this arg ↓ to your clangd executable location (if not included)!
                 -- "--query-driver=/usr/bin/clang++,/usr/bin/**/clang-*,/bin/clang,/bin/clang++,/usr/bin/gcc,/usr/bin/g++",
                 '--clang-tidy',
