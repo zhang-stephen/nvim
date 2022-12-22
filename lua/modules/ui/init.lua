@@ -40,7 +40,7 @@ ui['akinsho/bufferline.nvim'] = {
     opt = true,
     tag = '*',
     event = 'BufReadPost',
-    config = conf.nvim_bufferline,
+    config = conf.bufferline,
 }
 ui['dstein64/nvim-scrollview'] = {
     opt = true,
