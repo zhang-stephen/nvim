@@ -69,7 +69,10 @@ Packer.setup = function()
     Packer.bootstrap()
 
     if not Packer.manager.status then
-        vim.notify(string.format('[%s] load failed, neovim initialized failed!', Packer.manager.name), vim.log.levels.ERROR)
+        vim.notify(
+            string.format('[%s] load failed, neovim initialized failed!', Packer.manager.name),
+            vim.log.levels.ERROR
+        )
         require('os').exit(-1)
     end
 
