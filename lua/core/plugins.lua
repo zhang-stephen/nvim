@@ -1,5 +1,4 @@
 local Packer = {}
-local log = require('utility.logger')
 local uv = vim.loop
 
 local nvim_data_path = vim.fn.stdpath('data') .. '/site'
@@ -61,7 +60,7 @@ Packer.bootstrap = function()
 
         Packer.manager.status = (ret ~= nil)
     else
-        log.info('plugin manager has been initliazed...')
+        vim.notify('plugin manager has been initliazed...', vim.log.levels.DEBUG)
         Packer.manager.status = true
     end
 end
@@ -70,7 +69,7 @@ Packer.setup = function()
     Packer.bootstrap()
 
     if not Packer.manager.status then
-        log.error(string.format('[%s] load failed, neovim initialized failed!', Packer.manager.name))
+        vim.notify(string.format('[%s] load failed, neovim initialized failed!', Packer.manager.name), vim.log.levels.ERROR)
         require('os').exit(-1)
     end
 
