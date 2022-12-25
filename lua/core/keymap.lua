@@ -9,7 +9,7 @@ local mappings = {
             ['<C-l>'] = { '<C-w>l', 'switch to right window' },
             ['<leader>'] = {
                 c = {
-                    name = '+Code Actions',
+                    name = 'Code Actions',
                     a = { '<cmd>Lspsaga code_action<CR>', 'Code action' },
                     d = {
                         '<cmd>TroubleToggle lsp_document_diagnostics<CR>',
@@ -21,22 +21,30 @@ local mappings = {
                     w = { '<cmd>TroubleToggle lsp_workspace_diagnostics<CR>', 'Show all diagnostics in workspace' },
                 },
                 e = { '<cmd>NvimTreeToggle<CR>', 'Toggle File Explorer' },
-                h = { name = '+gitsigns' },
+                h = { name = 'gitsigns' },
                 o = { '<cmd>Lspsaga outline<CR>', 'Toggle lspsaga outline' },
                 p = {
-                    name = '+Packer.nvim',
+                    name = 'packer.nvim',
                     c = { '<cmd>PackerClean<CR>', 'Remove all plugins' },
                     i = { '<cmd>PackerInstall<CR>', 'Install new plugins' },
                     s = { '<cmd>PackerSync<CR>', 'Upgrade & re-configure all plugins' },
                     u = { '<cmd>PackerUpdate<CR>', 'Update packer.nvim itself' },
                 },
+                q = {
+                    name = 'hop.nvim',
+                    a = { '<cmd>HopLineStartMW<CR>', 'Jump to head of any line in visible buffers' },
+                    c = { '<cmd>HopChar1<CR>', 'Jump to any character' },
+                    l = { '<cmd>HopLineStart<CR>', 'Jump to head of any line' },
+                    v = { '<cmd>HopChar2<CR>', 'Hop to any bigram' },
+                    w = { '<cmd>HopWord<CR>', 'Hop to start of any word' },
+                },
                 t = {
-                    name = '+Telescope',
+                    name = 'Telescope',
                 },
             },
             ['<F10>'] = { '<cmd>ccl<CR>', 'Close QuickFix window' },
             g = {
-                name = '+goto',
+                name = 'goto',
                 ['['] = { '<cmd>Lspsaga diagnostic_jump_prev<CR>', 'Goto previous diagnostic' },
                 [']'] = { '<cmd>Lspsaga diagnostic_jump_next<CR>', 'Goto next diagnostic' },
                 b = { '<cmd>BufferLinePick<CR>', 'unknown' },
@@ -52,17 +60,27 @@ local mappings = {
         },
         opt = { mode = 'n' },
     },
+    terminal = {
+        specs = {
+            ['<Esc>'] = { '<C-\\><C-n>', 'Escape Terminal Mode' },
+            ['<C-h>'] = { '<C-\\><C-w>h', 'Switch to left window' },
+            ['<C-j>'] = { '<C-\\><C-w>j', 'Switch to down window' },
+            ['<C-k>'] = { '<C-\\><C-w>k', 'Switch to up window' },
+            ['<C-l>'] = { '<C-\\><C-w>l', 'Switch to right window' },
+        },
+        opt = { mode = 't' },
+    },
     command = { specs = {}, opt = { mode = 'c' } },
     visual = { specs = {}, opt = { mode = 'v' } },
 }
 
-local check_whichkey = function()
+local check_which_key = function()
     local ok, _ = pcall(require, 'which-key')
     return ok
 end
 
 keymap.setup = function()
-    if not check_whichkey() then
+    if not check_which_key() then
         vim.notify('WRN: which-key.nvim not found, keymap initialize failed!')
         return
     end
