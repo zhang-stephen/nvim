@@ -11,6 +11,16 @@ local defs = {
             end,
         },
     },
+    {
+        event = 'FileType',
+        opts = {
+            group = nil,
+            pattern = 'cpp',
+            callback = function()
+                vim.api.nvim_buf_set_option(0, 'commentstring', '// %s')
+            end,
+        },
+    },
 }
 
 event.setup = function()
