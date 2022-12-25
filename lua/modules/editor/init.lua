@@ -11,6 +11,11 @@ editor['terrortylor/nvim-comment'] = {
     opt = false,
     config = conf.nvim_comment,
 }
+editor['folke/todo-comments.nvim'] = {
+    opt = true,
+    event = 'BufReadPost',
+    config = conf.todo_comments,
+}
 editor['nvim-treesitter/nvim-treesitter'] = {
     opt = true,
     run = ':TSUpdate',
