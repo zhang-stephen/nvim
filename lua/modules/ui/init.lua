@@ -58,5 +58,3 @@ ui['j-hui/fidget.nvim'] = {
 }
 
 return ui
-
--- EOF

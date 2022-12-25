@@ -123,5 +123,3 @@ plugins.setup = function()
 end
 
 return plugins
-
--- EOF

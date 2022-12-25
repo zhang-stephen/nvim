@@ -865,5 +865,3 @@ config.fidget = function()
 end
 
 return config
-
--- EOF

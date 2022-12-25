@@ -6,5 +6,3 @@ local modules = {
 }
 
 return modules
-
--- EOF

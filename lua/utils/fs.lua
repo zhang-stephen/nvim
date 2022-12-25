@@ -54,5 +54,3 @@ fs.traverse = function(start)
 end
 
 return fs
-
--- EOF

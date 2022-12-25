@@ -22,5 +22,3 @@ core.setup = function()
 end
 
 return core
-
--- EOF

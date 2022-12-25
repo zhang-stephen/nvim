@@ -18,5 +18,3 @@ platform.is_unix_like = function()
 end
 
 return platform
-
--- EOF

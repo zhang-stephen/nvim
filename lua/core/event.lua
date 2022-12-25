@@ -33,5 +33,3 @@ event.setup = function()
 end
 
 return event
-
--- EOF
