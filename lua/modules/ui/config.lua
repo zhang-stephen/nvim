@@ -326,6 +326,7 @@ end
 
 config.notify = function()
     local notify = require('notify')
+    local notify_renderers = require('notify.render')
     local icons = {
         diagnostics = require('modules.ui.icons').get('diagnostics'),
         ui = require('modules.ui.icons').get('ui'),
@@ -340,8 +341,6 @@ config.notify = function()
         on_close = nil,
         ---@usage timeout for notifications in ms, default 5000
         timeout = 2000,
-        -- Render function for notifications. See notify-render()
-        render = 'default',
         ---@usage highlight behind the window for stages that change opacity
         background_colour = 'Normal',
         ---@usage minimum width for notification windows
@@ -356,6 +355,14 @@ config.notify = function()
             DEBUG = icons.ui.Bug,
             TRACE = icons.ui.Pencil,
         },
+        -- Render function for notifications. See notify-render()
+        render = function(bufnr, notif, ...)
+            if notif.title[1] == '' then
+                return notify_renderers.minimal(bufnr, notif, ...)
+            else
+                return notify_renderers.default(bufnr, notif, ...)
+            end
+        end,
     })
 
     vim.notify = notify
