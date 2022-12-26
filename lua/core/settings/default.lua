@@ -1,18 +1,10 @@
--- **Experimental** --
--- user settings, which is following projects
--- would be referred in the plugin configurations, to adapt requirements of different projects
--- nvim +PackerSync is still required if settings were updated...
-
--- the default user settings could be obtained from following methods(priority high to low):
---     + <project_root>/.nvim/settings.json(or yaml), a folder with .git/, .nvim/ or .proj would be treated as a project
---     + envrionment variables, name pattern: NVIM_<FIELDS>(capitalized)(not implemented)
---     + $XDG_CONFIG_HOME/.nvim.json
-
-local settings = {
-    root_dir_patterns = { 'git/', '.nvim/', '.proj' },
-}
+-- the default user settings with dynamic application
 
 local DEFAULT_USER_SETTING = {
+    ---@type table builtin options/settings of neovim
+    builtins = {},
+
+    ---@type table options for plugins
     plugins = {
         -- example ENV: NVIM_PLUGINS_USE_SSH
         -- use SSH to download plugins and treesitter parsers from github instead of HTTPS
@@ -25,7 +17,7 @@ local DEFAULT_USER_SETTING = {
                 c_cxx_server = 'clangd',
                 ---@type table<string> default arguments, passed to c_cxx_server directly
                 default_args = {
-                    '-j=12',
+                    '-j=6',
                     '--background-index',
                     '--pch-storage=memory',
                     -- '--clang-tidy',
@@ -53,7 +45,7 @@ local DEFAULT_USER_SETTING = {
         },
         editor = {
             -- Telescope
-            ts = {
+            telescope = {
                 ---@type string | nil the path to find libsqlite3.so
                 sqlite_clib_path = nil,
             },
@@ -61,12 +53,4 @@ local DEFAULT_USER_SETTING = {
     },
 }
 
-settings.get = function()
-    return DEFAULT_USER_SETTING
-end
-
-settings.setup = function() end
-
-return settings
-
--- EOF
+return DEFAULT_USER_SETTING
