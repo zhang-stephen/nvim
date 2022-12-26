@@ -5,7 +5,7 @@ local nvim_data_path = vim.fn.stdpath('data') .. '/site'
 local default_compiled = nvim_data_path .. '/lua/_compiled.lua'
 local packer = nil
 
-local use_ssh = vim.env['USE_SSH_TO_GITHUB'] ~= nil
+local use_ssh = require('core.settings').get().plugins.use_ssh
 local url_scheme = use_ssh and 'git@github.com:%s' or 'https://github.com/%s'
 
 local disable_distribution_plugins = function()

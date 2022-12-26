@@ -1,6 +1,6 @@
 local config = {}
 local sessions_dir = vim.fn.stdpath('data') .. '/sessions/'
-local use_ssh = false -- require('core.settings').use_ssh
+local use_ssh = require('core.settings').get().plugins.use_ssh
 
 function config.nvim_treesitter()
     vim.api.nvim_set_option_value('foldmethod', 'expr', {})
