@@ -1,14 +1,13 @@
 local core = {
     config = {
         require('core.options'),
-        require('core.plugins'),
         require('core.keymap'),
         require('core.event'),
     },
 }
 
 local is_nvim_compatible = function()
-    return vim.fn.has('nvim-0.8')
+    return vim.fn.has('nvim-0.9')
 end
 
 core.setup = function()
