@@ -8,10 +8,10 @@ return {
         registries = {
             lsp = {
                 -- language servers, should be compatible with nvim-lspconfig
-                ['lua-language-server']   = {
+                ['lua-language-server'] = {
                     enabled = false,
                     installer = 'mason', -- installer by mason.nvim, or 'system' for installer by package manager,
-                    type = 'git',        -- npm, binary, crates, pypi, git, for health checking
+                    type = 'git', -- npm, binary, crates, pypi, git, for health checking
                     options = {
                         -- configurations passed to lspconfig
                         -- FIXME: not support field root_dir(it's a lua class, not a list)
@@ -27,7 +27,7 @@ return {
                                 },
                                 workspace = {
                                     -- Make the server aware of Neovim runtime files
-                                    library = vim.api.nvim_get_runtime_file("", true),
+                                    library = vim.api.nvim_get_runtime_file('', true),
                                 },
                                 -- Do not send telemetry data containing a randomized but unique identifier
                                 telemetry = {
@@ -38,70 +38,66 @@ return {
                     },
                 },
 
-                clangd                    = {
+                clangd = {
                     enabled = true,
                     installer = 'system',
                     type = 'binary',
                     options = {
                         cmd = {
                             'clangd',
-                            "-j=8",
-                            "--log=info",
-                            "--pch-storage=memory",
-                            "--enable-config",
-                            "--header-insertion=iwyu",
-                            "--clang-tidy",
-                            "--completion-style=detailed",
-                            "--background-index",
-                            "--all-scopes-completion",
-                            "--pretty"
+                            '-j=8',
+                            '--log=info',
+                            '--pch-storage=memory',
+                            '--enable-config',
+                            '--header-insertion=iwyu',
+                            '--clang-tidy',
+                            '--completion-style=detailed',
+                            '--background-index',
+                            '--all-scopes-completion',
+                            '--pretty',
                         },
                         single_file_support = true,
                     },
-                }
-                ,
-                pyright                   = {
+                },
+                pyright = {
                     enabled = false,
                     installer = 'mason',
                     type = 'npm',
                     options = {},
-                }
-                ,
+                },
                 ['cmake-language-server'] = {
                     enabled = false,
                     installer = 'mason',
                     type = 'pypi',
                     options = {},
-                }
-                ,
-                ['rust-analyzer']         = {
+                },
+                ['rust-analyzer'] = {
                     enabled = false,
                     installer = 'mason',
                     type = 'git',
                     options = {},
-                }
-                ,
+                },
 
-                svls                      = {
+                svls = {
                     enabled = false,
                     installer = 'mason',
                     type = 'crates',
-                    options = {}
+                    options = {},
                 },
 
-                ['json-lsp']              = {
+                ['json-lsp'] = {
                     enabled = false,
                     installer = 'mason',
                     type = 'npm',
                     options = {},
                 },
 
-                taplo                     = {
+                taplo = {
                     enabled = false,
                     installer = 'mason',
                     type = 'crates',
                     options = {},
-                }
+                },
             },
 
             null = {
