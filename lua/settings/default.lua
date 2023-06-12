@@ -9,9 +9,16 @@ return {
             lsp = {
                 -- language servers, should be compatible with nvim-lspconfig
                 ['lua-language-server'] = {
-                    enabled = false,
-                    installer = 'mason', -- installer by mason.nvim, or 'system' for installer by package manager,
-                    type = 'git', -- npm, binary, crates, pypi, git, for health checking
+                    -- enabled or not, if not enabled, it won't be installed or configured
+                    enabled = true,
+                    -- installer by mason.nvim, or 'system' for installer by package manager,
+                    installer = 'mason',
+                    -- registry types, it would be ignored if installer is 'system'
+                    -- npm, binary, crates, pypi, git, for health checking
+                    type = 'git',
+                    -- lspconfig name
+                    -- it could be nil if it's same as registry name
+                    name = 'lua_ls',
                     options = {
                         -- configurations passed to lspconfig
                         -- FIXME: not support field root_dir(it's a lua class, not a list)
@@ -37,7 +44,6 @@ return {
                         },
                     },
                 },
-
                 clangd = {
                     enabled = true,
                     installer = 'system',
@@ -60,15 +66,16 @@ return {
                     },
                 },
                 pyright = {
-                    enabled = false,
+                    enabled = true,
                     installer = 'mason',
                     type = 'npm',
                     options = {},
                 },
                 ['cmake-language-server'] = {
-                    enabled = false,
+                    enabled = true,
                     installer = 'mason',
                     type = 'pypi',
+                    name = 'cmake',
                     options = {},
                 },
                 ['rust-analyzer'] = {
@@ -86,9 +93,10 @@ return {
                 },
 
                 ['json-lsp'] = {
-                    enabled = false,
+                    enabled = true,
                     installer = 'mason',
                     type = 'npm',
+                    name = 'jsonls',
                     options = {},
                 },
 

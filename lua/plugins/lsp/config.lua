@@ -47,11 +47,17 @@ config.lspconfig = function()
     -- TODO: for other function extension
     local on_attach = function(client, bufnr) end
 
-    for name, conf in pairs(servers) do
+    for registry, conf in pairs(servers) do
         if conf.enabled then
             local options = conf.options
+            local name = registry
+
             options['on_attach'] = on_attach
             options['capabilities'] = capabilities
+
+            if conf.name then
+                name = conf.name
+            end
 
             lsp[name].setup(options)
         end
