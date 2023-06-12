@@ -1,6 +1,17 @@
 -- default settings, used in plugins configuration
 
 return {
+    envs = {
+        {
+            name = 'EXAMPLE_ENVIRON_NVIM',
+            -- applying method
+            --   - prepend: export [env]=[value]:$[env]
+            --   - append: export [env]=$[env]:[value]
+            --   - overwrite: export [env]=$[value]
+            method = 'overwrite',
+            value = 'nvim-0.9',
+        }
+    },
     plugins = {
         use_git_ssh = false,
 
