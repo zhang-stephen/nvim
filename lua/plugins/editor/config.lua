@@ -101,4 +101,8 @@ config.treesitter = function()
     require('nvim-treesitter.install').prefer_git = true
 end
 
+config.matchup = function()
+    vim.api.nvim_command([[let g:matchup_matchparen_offscreen = {'method': 'popup'}]])
+end
+
 return config

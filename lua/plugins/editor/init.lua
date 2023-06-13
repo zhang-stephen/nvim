@@ -59,6 +59,51 @@ return {
             'p00f/nvim-ts-rainbow',
             'mfussenegger/nvim-ts-hint-textobject',
             'JoosepAlviste/nvim-ts-context-commentstring',
+            {
+                'andymass/vim-matchup',
+                config = conf.matchup,
+            },
         },
+    },
+
+    -- enhaced git
+    {
+        'tpope/vim-fugitive',
+        cmd = { 'Git', 'G' },
+    },
+
+    -- movements
+    {
+        'phaazon/hop.nvim',
+        config = conf.hop,
+        cmd = {
+            'HopLine',
+            'HopLineStart',
+            'HopWord',
+            'HopPattern',
+            'HopChar1',
+            'HopChar2',
+        },
+        opts = {
+            keys = 'etovxqpdygfblzhckisuran',
+        },
+        keys = {},
+    },
+
+    -- better scroll
+    {
+        'karb94/neoscroll.nvim',
+        event = 'WinScrolled',
+        config = true,
+    },
+
+    -- advanced terminals
+    -- others
+    {
+        'romainl/vim-cool',
+        event = { 'CursorMoved', 'InsertEnter' },
+        config = function()
+            vim.g.CoolTotalMathes = 1
+        end,
     },
 }
