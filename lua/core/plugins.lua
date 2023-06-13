@@ -4,7 +4,7 @@ local git_url_template = require('settings').git_url_template()
 plugins.setup = function()
     local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 
-    if not vim.loop.fs_stat(lazypath) then
+    if not vim.uv.fs_stat(lazypath) then
       vim.fn.system({
         "git",
         "clone",
@@ -17,13 +17,18 @@ plugins.setup = function()
 
     vim.opt.rtp:prepend(lazypath)
 
+    local plugins_ = {}
     local lazy = require('lazy')
     local lazy_options = {
         git = {
         }
     }
 
-    lazy.setup(require('plugins.lsp'), lazy_options)
+    for _, specs in ipairs(require('plugins')) do
+        vim.list_extend(plugins_, specs)
+    end
+
+    lazy.setup(plugins_, lazy_options)
 
 end
 
