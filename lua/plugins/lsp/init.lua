@@ -12,12 +12,13 @@ local lsp = {
     {
         'WhoIsSethDaniel/mason-tool-installer.nvim',
         config = conf.mason_installer,
+        build = ':MasonToolInstall',
     },
 
     -- LSP servers
     {
         'neovim/nvim-lspconfig',
-        event = {'BufReadPre', 'BufNewFile'},
+        event = { 'BufReadPre', 'BufNewFile' },
         module = true,
         config = conf.lspconfig,
     },
@@ -26,17 +27,16 @@ local lsp = {
         event = 'LspAttach',
         config = conf.lspsaga,
         keys = {
-            {'K', '<cmd>Lspsaga hover_doc<CR>', mode = 'n', desc = 'hover document view'},
-            {'g[', '<cmd>Lspsaga diagnostic_jump_prev<CR>', mode = 'n', desc = 'goto previous dianostic'},
-            {'g]', '<cmd>Lspsaga diagnostic_jump_next<CR>', mode = 'n', desc = 'goto next dianostic'},
-            {'gs', '<cmd>Lspsaga signature_help<CR>', mode = 'n', desc = 'signature help'},
-            {'gp', '<cmd>Lspsaga preview definition<CR>', mode = 'n', desc = 'definition preview in float'},
-            {'gd', '<cmd>lua vim.lsp.buf.definition()<CR>', mode = 'n', desc = 'goto definition'},
-            {'<leader>ca', '<cmd>Lspsaga code_action<CR>', mode = 'n', desc = 'do some code actions'},
-            {'<leader>ca', '<cmd>Lspsaga code_action<CR>', mode = 'v', desc = 'do some code actions in the range'},
-            {'<leader>rn', '<cmd>Lspsaga rename<CR>', mode = 'n', desc = 'symbol rename'},
-
-        }
+            { 'K', '<cmd>Lspsaga hover_doc<CR>', mode = 'n', desc = 'hover document view' },
+            { 'g[', '<cmd>Lspsaga diagnostic_jump_prev<CR>', mode = 'n', desc = 'goto previous dianostic' },
+            { 'g]', '<cmd>Lspsaga diagnostic_jump_next<CR>', mode = 'n', desc = 'goto next dianostic' },
+            { 'gs', '<cmd>Lspsaga signature_help<CR>', mode = 'n', desc = 'signature help' },
+            { 'gp', '<cmd>Lspsaga preview definition<CR>', mode = 'n', desc = 'definition preview in float' },
+            { 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>', mode = 'n', desc = 'goto definition' },
+            { '<leader>ca', '<cmd>Lspsaga code_action<CR>', mode = 'n', desc = 'do some code actions' },
+            { '<leader>ca', '<cmd>Lspsaga code_action<CR>', mode = 'v', desc = 'do some code actions in the range' },
+            { '<leader>rn', '<cmd>Lspsaga rename<CR>', mode = 'n', desc = 'symbol rename' },
+        },
     },
     {
         'ray-x/lsp_signature.nvim',
@@ -66,7 +66,7 @@ local lsp = {
         'L3MON4D3/LuaSnip',
         module = true,
         event = 'InsertEnter',
-        build = "make install_jsregexp",
+        build = 'make install_jsregexp',
         config = conf.luasnip,
     },
     {

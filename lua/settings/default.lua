@@ -10,7 +10,7 @@ return {
             --   - overwrite: export [env]=$[value]
             method = 'overwrite',
             value = 'nvim-0.9',
-        }
+        },
     },
     plugins = {
         use_git_ssh = false,

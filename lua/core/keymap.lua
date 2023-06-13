@@ -93,24 +93,8 @@ local mappings = {
     visual = { specs = {}, opt = { mode = 'v' } },
 }
 
-local check_which_key = function()
-    local ok, _ = pcall(require, 'which-key')
-    return ok
-end
-
 keymap.setup = function()
-    if not check_which_key() then
-        vim.notify('WRN: which-key.nvim not found, keymap initialize failed!')
-        return
-    end
-
     vim.g.mapleader = ' ' -- use <space> as default leader
-
-    local wk = require('which-key')
-
-    for _, mapping in pairs(mappings) do
-        wk.register(mapping.specs, mapping.opt)
-    end
 end
 
 return keymap
