@@ -8,6 +8,8 @@ return {
     },
     {
         'catppuccin/nvim',
+        lazy = false,
+        priority = 1000,
         name = 'catppuccin',
         config = conf.catppuccin,
     },
@@ -26,5 +28,8 @@ return {
         'nvim-tree/nvim-tree.lua',
         cmd = { 'NvimTreeToggle', 'NvimTreeOpen' },
         config = conf.nvim_tree,
+        keys = {
+            { '<leader>ft', '<cmd>NvimTreeToggle<CR>', mode = 'n', desc = 'nvim file tree'},
+        },
     },
 }

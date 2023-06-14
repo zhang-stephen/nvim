@@ -24,7 +24,7 @@ config.catppuccin = function()
         },
     })
 
-    vim.api.nvim_command('color catppuccin')
+    vim.api.nvim_command('colorscheme catppuccin')
 end
 
 config.lualine = function()
@@ -64,7 +64,7 @@ config.lualine = function()
                 {
                     'diagnostics',
                     sources = { 'nvim_diagnostic' },
-                    symbols = { error = ' ', warn = ' ', info = ' ' },
+                    symbols = { error = 'E: ', warn = 'W: ', info = 'I: ', hint = 'H: ' },
                 },
             },
             lualine_y = { 'filetype', 'encoding', 'fileformat' },
