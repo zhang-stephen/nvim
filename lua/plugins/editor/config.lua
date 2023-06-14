@@ -42,8 +42,11 @@ config.treesitter = function()
             'lua',
             'cmake',
             'make',
-            'vim',
+            -- 'vim',
             'bash',
+            -- for lspsaga.nvim
+            'markdown',
+            'markdown_inline'
         },
         highlight = {
             enable = true,

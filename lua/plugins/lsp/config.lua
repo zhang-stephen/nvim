@@ -45,6 +45,7 @@ config.lspconfig = function()
     local capabilities = require('cmp_nvim_lsp').default_capabilities()
 
     -- TODO: for other function extension
+    ---@diagnostic disable-next-line:unused-local
     local on_attach = function(client, bufnr) end
 
     for registry, conf in pairs(servers) do
@@ -65,124 +66,100 @@ config.lspconfig = function()
 end
 
 config.lspsaga = function()
-    -- local icons = {
-    --     diagnostics = require('plugins.ui.icons').get('diagnostics', true),
-    --     kind = require('plugins.ui.icons').get('kind', true),
-    --     type = require('plugins.ui.icons').get('type', true),
-    --     ui = require('plugins.ui.icons').get('ui', true),
-    -- }
+    local icons = {
+        diagnostics = require('plugins.ui.icons').get('diagnostics', true),
+        kind = require('plugins.ui.icons').get('kind', true),
+        type = require('plugins.ui.icons').get('type', true),
+        ui = require('plugins.ui.icons').get('ui', true),
+    }
 
-    -- local function set_sidebar_icons()
-    --     -- Set icons for sidebar.
-    --     local diagnostic_icons = {
-    --         Error = icons.diagnostics.Error_alt,
-    --         Warn = icons.diagnostics.Warning_alt,
-    --         Info = icons.diagnostics.Information_alt,
-    --         Hint = icons.diagnostics.Hint_alt,
-    --     }
-    --     for type, icon in pairs(diagnostic_icons) do
-    --         local hl = 'DiagnosticSign' .. type
-    --         vim.fn.sign_define(hl, { text = icon, texthl = hl })
-    --     end
-    -- end
+    local function set_sidebar_icons()
+        -- Set icons for sidebar.
+        local diagnostic_icons = {
+            Error = icons.diagnostics.Error_alt,
+            Warn = icons.diagnostics.Warning_alt,
+            Info = icons.diagnostics.Information_alt,
+            Hint = icons.diagnostics.Hint_alt,
+        }
+        for type, icon in pairs(diagnostic_icons) do
+            local hl = 'DiagnosticSign' .. type
+            vim.fn.sign_define(hl, { text = icon, texthl = hl })
+        end
+    end
 
-    -- local function get_palette()
-    --     if vim.g.colors_name == 'catppuccin' then
-    --         -- If the colorscheme is catppuccin then use the palette.
-    --         return require('catppuccin.palettes').get_palette()
-    --     else
-    --         -- Default behavior: return lspsaga's default palette.
-    --         local palette = require('lspsaga.lspkind').colors
-    --         palette.peach = palette.orange
-    --         palette.flamingo = palette.orange
-    --         palette.rosewater = palette.yellow
-    --         palette.mauve = palette.violet
-    --         palette.sapphire = palette.blue
-    --         palette.maroon = palette.orange
+    set_sidebar_icons()
 
-    --         return palette
-    --     end
-    -- end
-
-    -- set_sidebar_icons()
-
-    -- local colors = get_palette()
-
-    -- require('lspsaga').init_lsp_saga({
-    --     diagnostic_header = {
-    --         icons.diagnostics.Error_alt,
-    --         icons.diagnostics.Warning_alt,
-    --         icons.diagnostics.Information_alt,
-    --         icons.diagnostics.Hint_alt,
-    --     },
-    --     custom_kind = {
-    --         -- Kind
-    --         Class = { icons.kind.Class, colors.yellow },
-    --         Constant = { icons.kind.Constant, colors.peach },
-    --         Constructor = { icons.kind.Constructor, colors.sapphire },
-    --         Enum = { icons.kind.Enum, colors.yellow },
-    --         EnumMember = { icons.kind.EnumMember, colors.teal },
-    --         Event = { icons.kind.Event, colors.yellow },
-    --         Field = { icons.kind.Field, colors.teal },
-    --         File = { icons.kind.File, colors.rosewater },
-    --         Function = { icons.kind.Function, colors.blue },
-    --         Interface = { icons.kind.Interface, colors.yellow },
-    --         Key = { icons.kind.Keyword, colors.red },
-    --         Method = { icons.kind.Method, colors.blue },
-    --         Module = { icons.kind.Module, colors.blue },
-    --         Namespace = { icons.kind.Namespace, colors.blue },
-    --         Number = { icons.kind.Number, colors.peach },
-    --         Operator = { icons.kind.Operator, colors.sky },
-    --         Package = { icons.kind.Package, colors.blue },
-    --         Property = { icons.kind.Property, colors.teal },
-    --         Struct = { icons.kind.Struct, colors.yellow },
-    --         TypeParameter = { icons.kind.TypeParameter, colors.maroon },
-    --         Variable = { icons.kind.Variable, colors.peach },
-    --         -- Type
-    --         Array = { icons.type.Array, colors.peach },
-    --         Boolean = { icons.type.Boolean, colors.peach },
-    --         Null = { icons.type.Null, colors.yellow },
-    --         Object = { icons.type.Object, colors.yellow },
-    --         String = { icons.type.String, colors.green },
-    --         -- ccls-specific iconss.
-    --         TypeAlias = { icons.kind.TypeAlias, colors.green },
-    --         Parameter = { icons.kind.Parameter, colors.blue },
-    --         StaticMethod = { icons.kind.StaticMethod, colors.peach },
-    --     },
-    --     symbol_in_winbar = {
-    --         enable = true,
-    --         in_custom = false,
-    --         separator = ' ' .. icons.ui.Separator,
-    --         show_file = false,
-    --         -- define how to customize filename, eg: %:., %
-    --         -- if not set, use default value `%:t`
-    --         -- more information see `vim.fn.expand` or `expand`
-    --         -- ## only valid after set `show_file = true`
-    --         file_formatter = '',
-    --         click_support = function(node, clicks, button, modifiers)
-    --             -- To see all avaiable details: vim.pretty_print(node)
-    --             local st = node.range.start
-    --             local en = node.range['end']
-    --             if button == 'l' then
-    --                 if clicks == 2 then
-    --                     -- double left click to do nothing
-    --                 else -- jump to node's starting line+char
-    --                     vim.fn.cursor(st.line + 1, st.character + 1)
-    --                 end
-    --             elseif button == 'r' then
-    --                 if modifiers == 's' then
-    --                     print('lspsaga') -- shift right click to print "lspsaga"
-    --                 end                  -- jump to node's ending line+char
-    --                 vim.fn.cursor(en.line + 1, en.character + 1)
-    --             elseif button == 'm' then
-    --                 -- middle click to visual select node
-    --                 vim.fn.cursor(st.line + 1, st.character + 1)
-    --                 vim.api.nvim_command([[normal v]])
-    --                 vim.fn.cursor(en.line + 1, en.character + 1)
-    --             end
-    --         end,
-    --     },
-    -- })
+    require('lspsaga').setup({
+        diagnostic_header = {
+            icons.diagnostics.Error_alt,
+            icons.diagnostics.Warning_alt,
+            icons.diagnostics.Information_alt,
+            icons.diagnostics.Hint_alt,
+        },
+        ui = {
+            kind = {
+            Class = { icons.kind.Class, "@lsp.type.class" },
+            Constant = { icons.kind.Constant, '@lsp.type.macro' },
+            Constructor = { icons.kind.Constructor, '@constructor' },
+            Enum = { icons.kind.Enum, '@lsp.type.enum' },
+            EnumMember = { icons.kind.EnumMember, '@lsp.type.enumMember' },
+            -- Event = { icons.kind.Event, colors.yellow },
+            Field = { icons.kind.Field, '@lsp.type.property' },
+            File = { icons.kind.File, '@comment' },
+            Function = { icons.kind.Function, '@lsp.type.function' },
+            Interface = { icons.kind.Interface, '@lsp.type.interface' },
+            Key = { icons.kind.Keyword, '@comment' },
+            Method = { icons.kind.Method, '@lsp.type.method' },
+            Module = { icons.kind.Module, '@lsp.type.module' },
+            Namespace = { icons.kind.Namespace, '@lsp.type.namespace' },
+            Number = { icons.kind.Number, '@number' },
+            Operator = { icons.kind.Operator, '@lsp.type.operator' },
+            Package = { icons.kind.Package, '@lsp.type.module' },
+            Property = { icons.kind.Property, '@lsp.type.property'},
+            Struct = { icons.kind.Struct, '@lsp.type.struct' },
+            TypeParameter = { icons.kind.TypeParameter, '@lsp.type.typeParameter' },
+            Variable = { icons.kind.Variable, '@lsp.type.vairable' },
+            Array = { icons.type.Array, '@lsp.type.vairable' },
+            Boolean = { icons.type.Boolean, '@boolean' },
+            Null = { icons.type.Null, '@lsp.type.vairable'  },
+            Object = { icons.type.Object, '@lsp.type.vairable'  },
+            String = { icons.type.String, '@string' },
+           },
+        },
+        symbol_in_winbar = {
+            enable = true,
+            in_custom = false,
+            separator = ' ' .. icons.ui.Separator,
+            show_file = true,
+            -- define how to customize filename, eg: %:., %
+            -- if not set, use default value `%:t`
+            -- more information see `vim.fn.expand` or `expand`
+            -- ## only valid after set `show_file = true`
+            file_formatter = '',
+            click_support = function(node, clicks, button, modifiers)
+                -- To see all avaiable details: vim.pretty_print(node)
+                local st = node.range.start
+                local en = node.range['end']
+                if button == 'l' then
+                    if clicks == 2 then
+                        -- double left click to do nothing
+                    else -- jump to node's starting line+char
+                        vim.fn.cursor(st.line + 1, st.character + 1)
+                    end
+                elseif button == 'r' then
+                    if modifiers == 's' then
+                        print('lspsaga') -- shift right click to print "lspsaga"
+                    end                  -- jump to node's ending line+char
+                    vim.fn.cursor(en.line + 1, en.character + 1)
+                elseif button == 'm' then
+                    -- middle click to visual select node
+                    vim.fn.cursor(st.line + 1, st.character + 1)
+                    vim.api.nvim_command([[normal v]])
+                    vim.fn.cursor(en.line + 1, en.character + 1)
+                end
+            end,
+        },
+    })
 end
 
 config.luasnip = function()
@@ -330,8 +307,8 @@ config.nvim_cmp = function()
     })
 
     local cmp_autopairs = require('nvim-autopairs.completion.cmp')
-    local cmp = require('cmp')
     local handlers = require('nvim-autopairs.completion.handlers')
+
     cmp.event:on(
         'confirm_done',
         cmp_autopairs.on_confirm_done({

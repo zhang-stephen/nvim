@@ -35,18 +35,6 @@ return {
         config = true,
     },
 
-    -- outline
-    {
-        'stevearc/aerial.nvim',
-        event = 'LspAttach',
-        cmd = { 'AerialToggle' },
-        module = true,
-        config = conf.aerial,
-        keys = {
-            { '<leader>o', '<cmd>AerialToggle<CR>', mode = 'n', desc = 'toggle outline view' },
-        },
-    },
-
     -- highlighter
     {
         'nvim-treesitter/nvim-treesitter',

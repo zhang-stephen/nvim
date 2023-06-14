@@ -17,16 +17,6 @@ return {
         config = conf.lualine,
     },
     {
-        'utilyre/barbecue.nvim',
-        name = 'barbecue',
-        event = { 'BufReadPre', 'BufNewFile' },
-        dependencies = {
-            'SmiteshP/nvim-navic',
-            'nvim-tree/nvim-web-devicons',
-        },
-        config = conf.barbecue,
-    },
-    {
         'akinsho/nvim-bufferline.lua',
         event = { 'BufReadPre', 'BufNewFile' },
         branch = 'main',
