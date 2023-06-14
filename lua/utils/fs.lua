@@ -1,13 +1,14 @@
 local fs = {}
 local platform = require('utils.platform')
 local PATH_SEPERATOR = platform.is_unix_like() and '/' or '\\'
+local uv = vim.fn.has('nvim-0.10') and vim.uv or vim.loop
 
 ---@params table<string>
 ---@return string | nil the root path or nil(failed)
 fs.find_root_dir = function(patterns)
     local root = nil
 
-    for dir in fs.traverse(vim.loop.cwd()) do
+    for dir in fs.traverse(uv.cwd()) do
         for _, pattern in ipairs(patterns) do
             local path_to_check = dir .. PATH_SEPERATOR .. pattern
 
@@ -52,5 +53,7 @@ fs.traverse = function(start)
         nil,
         start
 end
+
+fs.separator = PATH_SEPERATOR
 
 return fs
