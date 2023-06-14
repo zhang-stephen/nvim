@@ -1,15 +1,33 @@
 -- settings
 
-local settings = {}
+local settings = { merged = {} }
 local platform = require('utils.platform')
+local fs = require('utils.fs')
 
 ---@return table settings valid user settings
 settings.get = function()
-    -- TODO: support settings merged from different locations
-    return require('settings.default')
+    return settings.merged
 end
 
 settings.init = function()
+    -- read settings.json from these paths:
+    --   * vim.fn.stdpath('data'), e.g. ~/.local/share/nvim/ mostly
+    --   * <proj_root/.nvim>, which there is .git/ subfolder
+    local system_settings_path = vim.fn.stdpath('data')
+    local project_settings_path = string.format('%s%s%s', fs.find_root_dir({'.git/'}), fs.separator, '.nvim')
+
+    -- priority: highest to lowest
+    local project_settings = settings.read(project_settings_path) or {}
+    local system_settings = settings.read(system_settings_path) or {}
+    local default_settings = require('settings.default')
+
+    -- settings merged
+    settings.merged = vim.tbl_deep_extend('keep', project_settings, system_settings, default_settings)
+
+    settings.apply_environs()
+end
+
+settings.apply_environs = function()
     local envrions = settings.get().envs
     local env_seperator = platform.is_unix_like() and ':' or ';'
 
@@ -52,6 +70,20 @@ settings.git_url_template = function()
     else
         return 'https://github.com/%s'
     end
+end
+
+-- read settings.json from specified path
+---@param path string the parent path of settings.json
+---@return table|nil
+settings.read = function (path)
+    local json = string.format('%s%s%s', path, fs.separator, 'settings.json')
+
+    if not vim.fn.isdirectory(path) or vim.fn.filereadable(json) ~= 1 then
+        return nil
+    end
+
+    local ok, conf = pcall(vim.fn.json_decode, io.open(json, 'r'):read('*a'))
+    return ok and conf or nil
 end
 
 return settings
