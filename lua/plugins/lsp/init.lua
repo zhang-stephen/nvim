@@ -35,7 +35,7 @@ local lsp = {
             { '<leader>ca', '<cmd>Lspsaga code_action<CR>', mode = 'n', desc = 'do some code actions' },
             { '<leader>ca', '<cmd>Lspsaga code_action<CR>', mode = 'v', desc = 'do some code actions in the range' },
             { '<leader>rn', '<cmd>Lspsaga rename<CR>', mode = 'n', desc = 'symbol rename' },
-            { '<leader>o', '<cmd>Lspsaga outline<CR>', mode = 'n', desc = 'outline view'},
+            { '<leader>o', '<cmd>Lspsaga outline<CR>', mode = 'n', desc = 'outline view' },
         },
     },
     {

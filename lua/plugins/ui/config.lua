@@ -205,6 +205,7 @@ config.nvim_tree = function()
             signcolumn = 'yes',
         },
         trash = { cmd = 'trash', require_confirm = true },
+        renderer = { symlink_destination = false },
     })
 end
 

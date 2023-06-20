@@ -46,7 +46,7 @@ config.treesitter = function()
             'bash',
             -- for lspsaga.nvim
             'markdown',
-            'markdown_inline'
+            'markdown_inline',
         },
         highlight = {
             enable = true,

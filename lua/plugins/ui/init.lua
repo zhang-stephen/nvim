@@ -29,7 +29,7 @@ return {
         cmd = { 'NvimTreeToggle', 'NvimTreeOpen' },
         config = conf.nvim_tree,
         keys = {
-            { '<leader>ft', '<cmd>NvimTreeToggle<CR>', mode = 'n', desc = 'nvim file tree'},
+            { '<leader>ft', '<cmd>NvimTreeToggle<CR>', mode = 'n', desc = 'nvim file tree' },
         },
     },
 }

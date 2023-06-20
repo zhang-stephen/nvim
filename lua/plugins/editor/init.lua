@@ -76,9 +76,9 @@ return {
             keys = 'etovxqpdygfblzhckisuran',
         },
         keys = {
-            {'<leader>hl', '<cmd>HopLine<CR>', mode = 'n', desc = 'hop to any line'},
-            {'<leader>hw', '<cmd>HopWord<CR>', mode = 'n', desc = 'hop to any word'},
-            {'<leader>hc', '<cmd>HopChar1<CR>', mode = 'n', desc = 'hop to any char'},
+            { '<leader>hl', '<cmd>HopLine<CR>', mode = 'n', desc = 'hop to any line' },
+            { '<leader>hw', '<cmd>HopWord<CR>', mode = 'n', desc = 'hop to any word' },
+            { '<leader>hc', '<cmd>HopChar1<CR>', mode = 'n', desc = 'hop to any char' },
         },
     },
 

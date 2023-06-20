@@ -14,7 +14,7 @@ settings.init = function()
     --   * vim.fn.stdpath('data'), e.g. ~/.local/share/nvim/ mostly
     --   * <proj_root/.nvim>, which there is .git/ subfolder
     local system_settings_path = vim.fn.stdpath('data')
-    local project_settings_path = string.format('%s%s%s', fs.find_root_dir({'.git/'}), fs.separator, '.nvim')
+    local project_settings_path = string.format('%s%s%s', fs.find_root_dir({ '.git/' }), fs.separator, '.nvim')
 
     -- priority: highest to lowest
     local project_settings = settings.read(project_settings_path) or {}
@@ -75,7 +75,7 @@ end
 -- read settings.json from specified path
 ---@param path string the parent path of settings.json
 ---@return table|nil
-settings.read = function (path)
+settings.read = function(path)
     local json = string.format('%s%s%s', path, fs.separator, 'settings.json')
 
     if not vim.fn.isdirectory(path) or vim.fn.filereadable(json) ~= 1 then
