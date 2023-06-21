@@ -150,7 +150,7 @@ config.bufferline = function()
                 return string.format('%s/%s', opts.raise(opts.id), opts.lower(opts.ordinal))
             end,
             modified_icon = '*',
-            buffer_close_icon = '',
+            buffer_close_icon = '󰅖',
             left_trunc_marker = '',
             right_trunc_marker = '',
             max_name_length = 14,

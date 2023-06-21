@@ -1,12 +1,22 @@
 local keymap = {}
 
 local mappings = {
-    normal = {
-        specs = {
-            ['<C-h>'] = { '<C-w>h', 'switch to left window' },
-            ['<C-j>'] = { '<C-w>j', 'switch to down window' },
-            ['<C-k>'] = { '<C-w>k', 'switch to up window' },
-            ['<C-l>'] = { '<C-w>l', 'switch to right window' },
+    n = {
+        { '<C-h>', '<C-w>h', { desc = 'switch to left window' }, },
+        { '<C-j>', '<C-w>j', { desc = 'switch to down window' }, },
+        { '<C-k>', '<C-w>k', { desc = 'switch to up window' }, },
+        { '<C-l>', '<C-w>l', { desc = 'switch to right window' }, },
+        { '<F10>', '<cmd>ccl<CR>', { desc = 'close the quickfix window' }, },
+        { 'D', 'd$', { desc = 'delete to the EOL', }, },
+        { 'Y', 'y$', { desc = 'yank to the EOL', }, },
+    },
+    t = {
+        { '<Esc>', '<C-\\><C-n>', { desc = 'escape from terminal mode' }, },
+        { '<C-h>', '<C-\\><C-w>h', { desc = 'switch to left window' }, },
+        { '<C-j>', '<C-\\><C-w>j', { desc = 'switch to down window' }, },
+        { '<C-k>', '<C-\\><C-w>k', { desc = 'switch to up window' }, },
+        { '<C-l>', '<C-\\><C-w>l', { desc = 'switch to right window' }, },
+    },
             -- ['<leader>'] = {
             --     b = {
             --         name = 'bufferline.nvim',
@@ -38,14 +48,6 @@ local mappings = {
             --     },
             --     e = { '<cmd>NvimTreeToggle<CR>', 'Toggle File Explorer' },
             --     h = { name = 'gitsigns' },
-            --     o = { '<cmd>Lspsaga outline<CR>', 'Toggle lspsaga outline' },
-            --     p = {
-            --         name = 'packer.nvim',
-            --         c = { '<cmd>PackerClean<CR>', 'Remove all plugins' },
-            --         i = { '<cmd>PackerInstall<CR>', 'Install new plugins' },
-            --         s = { '<cmd>PackerSync<CR>', 'Upgrade & re-configure all plugins' },
-            --         u = { '<cmd>PackerUpdate<CR>', 'Update packer.nvim itself' },
-            --     },
             --     q = {
             --         name = 'hop.nvim',
             --         a = { '<cmd>HopLineStartMW<CR>', 'Hop to head of any line in visible buffers' },
@@ -61,40 +63,16 @@ local mappings = {
             --         t = { '<cmd>TodoTelescope<CR>', 'Find all TODOs' },
             --     },
             -- },
-            ['<F10>'] = { '<cmd>ccl<CR>', 'Close QuickFix window' },
-            -- g = {
-            --     name = 'goto',
-            --     ['['] = { '<cmd>Lspsaga diagnostic_jump_prev<CR>', 'Goto previous diagnostic' },
-            --     [']'] = { '<cmd>Lspsaga diagnostic_jump_next<CR>', 'Goto next diagnostic' },
-            --     b = { '<cmd>BufferLinePick<CR>', 'unknown' },
-            --     d = { '<cmd>lua vim.lsp.buf.definition()<CR>', 'Goto definition under cursor' },
-            --     p = { '<cmd>Lspsaga peek_definition<CR>', 'Preview defintion under cursor' },
-            --     r = { '<cmd>TroubleToggle lsp_references<CR>', 'Show reference list of symbol under cursor' },
-            --     s = { '<cmd>Lspsaga signature_help<CR>', 'Show help of function under cursor' },
-            --     t = { '<cmd>TroubleToggle<CR>', 'Show all diagnostics of current buffer' },
-            -- },
-            D = { 'd$', 'Delete to EOL' },
-            -- K = { '<cmd>Lspsaga hover_doc<CR>', 'Show hover information of symbol' },
-            Y = { 'y$', 'Yank to EOL' },
-        },
-        opt = { mode = 'n' },
-    },
-    terminal = {
-        specs = {
-            ['<Esc>'] = { '<C-\\><C-n>', 'Escape Terminal Mode' },
-            ['<C-h>'] = { '<C-\\><C-w>h', 'Switch to left window' },
-            ['<C-j>'] = { '<C-\\><C-w>j', 'Switch to down window' },
-            ['<C-k>'] = { '<C-\\><C-w>k', 'Switch to up window' },
-            ['<C-l>'] = { '<C-\\><C-w>l', 'Switch to right window' },
-        },
-        opt = { mode = 't' },
-    },
-    command = { specs = {}, opt = { mode = 'c' } },
-    visual = { specs = {}, opt = { mode = 'v' } },
 }
 
 keymap.setup = function()
     vim.g.mapleader = ' ' -- use <space> as default leader
+
+    for mode, specs in pairs(mappings) do
+        for _, spec in ipairs(specs) do
+            vim.keymap.set(mode, spec[1], spec[2], spec[3])
+        end
+    end
 end
 
 return keymap

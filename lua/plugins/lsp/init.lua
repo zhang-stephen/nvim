@@ -31,6 +31,7 @@ local lsp = {
             { 'g[', '<cmd>Lspsaga diagnostic_jump_prev<CR>', mode = 'n', desc = 'goto previous dianostic' },
             { 'g]', '<cmd>Lspsaga diagnostic_jump_next<CR>', mode = 'n', desc = 'goto next dianostic' },
             { 'gs', '<cmd>Lspsaga signature_help<CR>', mode = 'n', desc = 'signature help' },
+            { 'gr', '<cmd>Lspsaga lsp_finder<CR>', mode = 'n', desc = 'find references/definitions' },
             { 'gd', '<cmd>Lspsaga peek_definition<CR>', mode = 'n', desc = 'goto definition' },
             { '<leader>ca', '<cmd>Lspsaga code_action<CR>', mode = 'n', desc = 'do some code actions' },
             { '<leader>ca', '<cmd>Lspsaga code_action<CR>', mode = 'v', desc = 'do some code actions in the range' },
