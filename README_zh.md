@@ -58,6 +58,16 @@ sudo dnf install git gcc fzf ripgrep clang-tools-extra lua-language-server
 sudo apt install pyright 2>/dev/null || pip install pyright
 ```
 
+发行版源没有 `lua-language-server` 时（如 fedora），装官方 release 二进制
+（版本号去 releases 页看最新；arm 机器用 `linux-arm64.tar.gz`）：
+
+```bash
+mkdir -p ~/.local/share/lua-language-server
+curl -L https://github.com/LuaLS/lua-language-server/releases/download/3.15.0/lua-language-server-3.15.0-linux-x64.tar.gz \
+  | tar xz -C ~/.local/share/lua-language-server
+ln -sf ~/.local/share/lua-language-server/bin/lua-language-server ~/.local/bin/
+```
+
 发行版源里的 neovim 版本过旧时，用官方 tarball 装到 `~/.local`：
 
 ```bash
@@ -121,4 +131,6 @@ bpftrace 脚本没有 LSP，当普通文本处理。
 
 - **blink.cmp 模糊匹配器下载失败**（网络受限）：`plugins.lua` 里 `fuzzy.implementation` 改 `'lua'`
 - **treesitter parser 编译失败**：缺 `gcc`，装上面的系统依赖
-- **图标显示为方块**：本地终端字体不是 nerd font——本地装 Maple Mono NF CN
+- **图标显示为方块**：在终端里跑 `printf '\ue0b0 \uf07b \uf15b\n'`。
+  这里也是方块 → *本地*终端字体不是 nerd font（本地装 Maple Mono NF CN 并在终端 profile 里选中）；
+  字形正常 → 是配置问题，报回来。

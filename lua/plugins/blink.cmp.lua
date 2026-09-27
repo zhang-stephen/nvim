@@ -12,5 +12,7 @@ return function()
         sources = { default = { 'lsp', 'path', 'buffer' } },
         -- prebuilt rust fuzzy matcher; set to 'lua' if the download is blocked
         fuzzy = { implementation = 'prefer_rust_with_warning' },
+        -- modern popup completion for the : cmdline (native tab wildmenu still works)
+        cmdline = { enabled = true },
     })
 end

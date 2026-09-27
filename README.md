@@ -61,6 +61,17 @@ sudo dnf install git gcc fzf ripgrep clang-tools-extra lua-language-server
 sudo apt install pyright 2>/dev/null || pip install pyright
 ```
 
+If the distro has no `lua-language-server` package (e.g. fedora), install the
+official release binary (check the releases page for the latest version;
+use `linux-arm64.tar.gz` on arm hosts):
+
+```bash
+mkdir -p ~/.local/share/lua-language-server
+curl -L https://github.com/LuaLS/lua-language-server/releases/download/3.15.0/lua-language-server-3.15.0-linux-x64.tar.gz \
+  | tar xz -C ~/.local/share/lua-language-server
+ln -sf ~/.local/share/lua-language-server/bin/lua-language-server ~/.local/bin/
+```
+
 If the distro neovim is too old, install the official tarball into `~/.local`:
 
 ```bash
@@ -125,4 +136,6 @@ bpftrace scripts have no LSP — treat as plain text.
 - **blink.cmp fuzzy matcher download fails** (restricted network): set
   `fuzzy.implementation = 'lua'` in `plugins.lua`.
 - **treesitter parser build fails**: missing `gcc` — install the system dependencies above.
-- **icons show as boxes**: local terminal font is not a nerd font — install Maple Mono NF CN locally.
+- **icons show as boxes**: run `printf '\ue0b0 \uf07b \uf15b\n'` in the terminal.
+  Boxes there too → the *local* terminal font is not a nerd font (install Maple Mono NF CN
+  locally and select it in the terminal profile). Glyphs fine → report a config issue.

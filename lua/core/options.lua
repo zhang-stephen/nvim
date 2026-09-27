@@ -63,10 +63,17 @@ options.setup = function()
     -- to the system clipboard; works anywhere the terminal supports it
     vim.g.clipboard = 'osc52'
 
-    -- diagnostics appearance
+    -- diagnostics appearance: nerd font signs instead of the default E/W/I/H letters
     vim.diagnostic.config({
         virtual_text = true,
-        signs = true,
+        signs = {
+            text = {
+                [vim.diagnostic.severity.ERROR] = '',
+                [vim.diagnostic.severity.WARN] = '',
+                [vim.diagnostic.severity.INFO] = '',
+                [vim.diagnostic.severity.HINT] = '',
+            },
+        },
         underline = true,
         severity_sort = true,
     })
