@@ -22,6 +22,9 @@ local repos = {
     { 'nvim-mini/mini.nvim' },
     -- completion UI: lsp only provides data, this layer owns popup/fuzzy/docs
     { 'saghen/blink.cmp', version = vim.version.range('1.*') },
+    -- current-line blame virtual text (gitlens style); also covers diff signs
+    -- and hunk actions, replacing mini.diff
+    { 'lewis6991/gitsigns.nvim' },
 }
 
 local function build_specs(use_ssh)

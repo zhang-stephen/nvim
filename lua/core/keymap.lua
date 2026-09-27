@@ -61,6 +61,11 @@ keymap.setup = function()
     map('n', 'gd', vim.lsp.buf.definition, { desc = 'goto definition' })
     map('n', '<leader>ld', vim.diagnostic.open_float, { desc = 'show line diagnostics' })
 
+    -- git blame deep dive: full commit in a float (gitsigns)
+    map('n', '<leader>gb', function()
+        require('gitsigns').blame_line()
+    end, { desc = 'blame line (full commit float)' })
+
     -- terminal mode
     map('t', '<Esc>', '<C-\\><C-n>', { desc = 'escape from terminal mode' })
     map('t', '<C-h>', '<C-\\><C-w>h', { desc = 'switch to left window' })

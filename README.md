@@ -86,8 +86,8 @@ tar xzf nvim-linux-*.tar.gz -C ~/.local --strip-components=1   # ensure ~/.local
 
 ## Git integration
 
+- **gitsigns**: diff signs, hunk actions, and gitlens-style current-line blame (virtual text)
 - **mini.git**: branch in statusline, blame at cursor, `:Git` command wrapper
-- **mini.diff**: signs for added/changed/deleted lines, hunk apply/reset, statusline counts
 - **fzf-lua git pickers**: `git_status` / `git_commits` / `git_branches` / `git_stash`
 - heavy interactive work (rebase, bulk staging): use **lazygit** (single binary, ssh-friendly)
 

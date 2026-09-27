@@ -82,8 +82,8 @@ tar xzf nvim-linux-*.tar.gz -C ~/.local --strip-components=1   # 确保 ~/.local
 
 ## Git 集成
 
+- **gitsigns**：diff 标记、hunk 操作、GitLens 风格当前行 blame（虚拟文本）
 - **mini.git**：statusline 分支名、光标处 blame、`:Git` 命令包装
-- **mini.diff**：增删改行标记、hunk 级 apply/reset、statusline 计数
 - **fzf-lua git pickers**：`git_status` / `git_commits` / `git_branches` / `git_stash`
 - 重度交互操作（rebase、批量 staging）：用 **lazygit**（单二进制，SSH 友好）
 
