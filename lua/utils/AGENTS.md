@@ -32,7 +32,9 @@ Design decisions, in order of importance:
 7. Nerd-font glyphs in source are written as byte escapes (`\xef\x92\x89`), never as
    literal characters — literals have been silently dropped before.
 
-## platform.lua
+## Platform detection
 
-OS / SSH detection helpers. `is_ssh()` is currently unused (OSC52 is enabled globally)
-but kept for future platform branches.
+Use builtin `vim.fn.has()` (`'win32'` / `'macunix'` / `'unix'`) — never
+`os_uname().sysname`, which msys2/mingw neovim builds report as MSYS-style
+strings. (The former `platform.lua` wrapper was retired: the builtin API made
+it a one-line shell.)

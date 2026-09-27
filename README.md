@@ -24,8 +24,8 @@ lua/
 │   ├── fzf-lua.lua
 │   ├── mini.nvim.lua
 │   └── blink.cmp.lua
-└── utils/
-    └── platform.lua      -- os / ssh detection
+└── utils/                -- hand-written utilities (see its AGENTS.md)
+    └── term.lua          -- panel-style dual-mode terminal manager
 ```
 
 ## Design decisions

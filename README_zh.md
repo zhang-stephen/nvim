@@ -22,8 +22,8 @@ lua/
 │   ├── fzf-lua.lua
 │   ├── mini.nvim.lua
 │   └── blink.cmp.lua
-└── utils/
-    └── platform.lua      -- 操作系统 / SSH 检测
+└── utils/                -- 手写工具模块（见其 AGENTS.md）
+    └── term.lua          -- panel 式双模终端管理器
 ```
 
 ## 设计决策

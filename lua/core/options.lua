@@ -1,5 +1,4 @@
 -- editor options, assigned directly via vim.o
-local platform = require('utils.platform')
 
 local options = {}
 
@@ -65,8 +64,9 @@ options.setup = function()
     vim.g.clipboard = 'osc52'
 
     -- windows: prefer pwsh for the integrated terminal (guarded: keep the
-    -- default when pwsh is not installed); other systems keep the default
-    if platform.is_win32() and vim.fn.executable('pwsh') == 1 then
+    -- default when pwsh is not installed); other systems keep the default.
+    -- has('win32') is authoritative: msys2 builds lie in os_uname().sysname
+    if vim.fn.has('win32') == 1 and vim.fn.executable('pwsh') == 1 then
         vim.o.shell = 'pwsh'
     end
 
