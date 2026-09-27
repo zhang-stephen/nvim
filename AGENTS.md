@@ -66,4 +66,6 @@ function reference.
 
 - **Never commit or push without the user's explicit approval.** Present changes and wait.
 - Commit titles follow Conventional Commits: `feat:` / `fix:` / `docs:` / `refactor:` / `chore:` ...
+- Partial staging (some hunks in, some out): use `git add -p`. **Never** simulate it by
+  temporarily deleting code, committing, then restoring.
 - Work happens on the `v2` orphan branch; `dev`/`master` keep the legacy config untouched.
