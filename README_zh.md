@@ -51,10 +51,10 @@ nvim   # 首次启动自动安装插件（有一次确认提示）
 
 ```bash
 # debian 13
-sudo apt install gcc fzf ripgrep clangd lua-language-server
+sudo apt install git gcc fzf ripgrep clangd lua-language-server
 # fedora 44
-sudo dnf install gcc fzf ripgrep clang-tools-extra lua-language-server
-# python lsp（任选其一）
+sudo dnf install git gcc fzf ripgrep clang-tools-extra lua-language-server
+# python lsp（任选其一；会带入 nodejs）
 sudo apt install pyright 2>/dev/null || pip install pyright
 ```
 
@@ -67,6 +67,15 @@ curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim-linux-ar
 curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.tar.gz
 tar xzf nvim-linux-*.tar.gz -C ~/.local --strip-components=1   # 确保 ~/.local/bin 在 PATH
 ```
+
+（这个一次性步骤需要 `curl` 和 `tar`。）
+
+## Git 集成
+
+- **mini.git**：statusline 分支名、光标处 blame、`:Git` 命令包装
+- **mini.diff**：增删改行标记、hunk 级 apply/reset、statusline 计数
+- **fzf-lua git pickers**：`git_status` / `git_commits` / `git_branches` / `git_stash`
+- 重度交互操作（rebase、批量 staging）：用 **lazygit**（单二进制，SSH 友好）
 
 ## eBPF 项目的 clangd 配置
 

@@ -1,4 +1,4 @@
--- mini.nvim monorepo: 11 modules
+-- mini.nvim monorepo: 13 modules
 -- icons first so the others pick it up; icons only need a nerd font on the
 -- *local* terminal (maple mono nf cn), remote hosts over ssh need nothing
 
@@ -26,6 +26,12 @@ return function()
     require('mini.notify').setup({})
     require('mini.indentscope').setup({})
     require('mini.bufremove').setup({})
+
+    -- git: branch data for statusline, blame-at-cursor, :Git wrapper;
+    -- diff: signs, hunk apply/reset, statusline counts.
+    -- heavy interactive work (rebase, bulk staging) is outsourced to lazygit
+    require('mini.git').setup({})
+    require('mini.diff').setup({})
 
     -- key hints for <leader>/g/[/] prefixes (discoverability while the config is new)
     local clue = require('mini.clue')
