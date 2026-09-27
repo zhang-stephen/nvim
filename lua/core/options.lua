@@ -1,4 +1,5 @@
 -- editor options, assigned directly via vim.o
+local platform = require('utils.platform')
 
 local options = {}
 
@@ -62,6 +63,12 @@ options.setup = function()
     -- OSC52 clipboard: the terminal emulator (local or over ssh) writes yanks
     -- to the system clipboard; works anywhere the terminal supports it
     vim.g.clipboard = 'osc52'
+
+    -- windows: prefer pwsh for the integrated terminal (guarded: keep the
+    -- default when pwsh is not installed); other systems keep the default
+    if platform.is_win32() and vim.fn.executable('pwsh') == 1 then
+        vim.o.shell = 'pwsh'
+    end
 
     -- diagnostics appearance: nerd font signs instead of the default E/W/I/H letters
     vim.diagnostic.config({

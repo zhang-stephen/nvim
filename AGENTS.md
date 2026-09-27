@@ -55,6 +55,9 @@ function reference.
   `use_git_ssh` in `lua/settings/init.lua`.
 - Lazy loading: only via `vim.pack.add(..., { load = false })` + manual `packadd()`.
   Do not add it for startup-essential plugins; reserve for genuinely heavy optional ones.
+- Terminal: self-hosted `lua/utils/term.lua` — see `lua/utils/AGENTS.md` for its
+  design rules (dual-mode, window-death, no leader in terminal mode, toggleterm
+  re-evaluation rule).
 
 ## LSP
 

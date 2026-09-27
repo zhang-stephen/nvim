@@ -101,6 +101,9 @@ keymap.setup = function()
     map('n', '<leader>tx', function()
         require('utils.term').kill()
     end, { desc = 'kill current terminal' })
+    map('n', '<leader>tr', function()
+        require('utils.term').rerun()
+    end, { desc = 'rerun last task' })
 end
 
 return keymap

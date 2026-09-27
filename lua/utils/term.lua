@@ -1,57 +1,43 @@
 -- panel-style terminal manager: vscode-style bottom dock
--- - toggle hides the panel but keeps the process alive
--- - cwd of new terminals follows neovim's working directory
--- - multiple terminals: new / cycle / kill
+-- two kinds of terminals:
+-- - shell: interactive; `exit` wipes it right away (no corpse, vscode-like)
+-- - task:  delegated via :TermRun/:T; keeps its scrollback after finishing,
+--          winbar label shows the exit code, closed manually (<leader>tx or q)
 local term = {}
 
 local HEIGHT_RATIO = 0.3
 
-local state = { terms = {}, active = 0, seq = 0 }
+local state = { terms = {}, active = 0, seq = 0, last_cmd = nil }
+
+----------------------------------------------------------------------
+-- helpers
+----------------------------------------------------------------------
 
 local function panel_height()
     return math.max(3, math.floor(vim.o.lines * HEIGHT_RATIO))
 end
 
+local function find_rec_idx(buf)
+    for i, rec in ipairs(state.terms) do
+        if rec.buf == buf then
+            return i
+        end
+    end
+    return nil
+end
+
 local function is_valid(idx)
-    local buf = state.terms[idx]
-    return buf and vim.api.nvim_buf_is_valid(buf)
+    local rec = state.terms[idx]
+    return rec and vim.api.nvim_buf_is_valid(rec.buf)
 end
 
--- label for the winbar: 'term://3:nvim' -> '3:nvim' (stable creation seq,
--- identical to what the statusline shows)
 local term_win -- forward declaration, defined below
-
-local function buf_label(buf)
-    return vim.api.nvim_buf_get_name(buf):match('[^/\\]+$') or ''
-end
-
--- panel winbar: clickable tabs ' 1:nvim  2:nvim ', active one highlighted
-local function render_winbar()
-    local parts = {}
-    for i, buf in ipairs(state.terms) do
-        local hl = (i == state.active) and '%#TabLineSel#' or '%#TabLine#'
-        -- %<i>@...@...%X makes the label clickable, minwid = terminal index
-        table.insert(parts, ("%%%d@v:lua.require'utils.term'.click@%s %s %%X"):format(i, hl, buf_label(buf)))
-    end
-    -- trailing fill must not inherit the active tab's highlight;
-    -- right-aligned key hints since mini.clue cannot cover terminal mode
-    -- (mapping <leader>=space in terminal mode would eat every typed space)
-    return table.concat(parts, ' ')
-        .. '%#TabLineFill# %= <C-\\>:hide <Esc>:normal <C-hjkl>:leave '
-end
-
-local function update_winbar()
-    local win = term_win()
-    if win then
-        vim.wo[win].winbar = #state.terms > 0 and render_winbar() or ''
-    end
-end
 
 -- the window currently showing any managed terminal, if visible
 term_win = function()
     local set = {}
-    for _, buf in ipairs(state.terms) do
-        set[buf] = true
+    for _, rec in ipairs(state.terms) do
+        set[rec.buf] = true
     end
     for _, win in ipairs(vim.api.nvim_list_wins()) do
         if set[vim.api.nvim_win_get_buf(win)] then
@@ -61,6 +47,42 @@ term_win = function()
     return nil
 end
 
+-- winbar label from the record (not the buffer name, which cannot
+-- express a task's exit state)
+local function rec_label(rec)
+    if rec.kind == 'task' then
+        -- '▶ ' (U+25B6, written as bytes) marks task terminals
+        local label = ('\xe2\x96\xb6 %d:%s'):format(rec.seq, rec.cmd)
+        if rec.done then
+            -- bare exit code: 0 is universally understood as success
+            label = label .. (' (%d)'):format(rec.code)
+        end
+        return label
+    end
+    -- '$ ' marks interactive shells
+    return ('$ %d:%s'):format(rec.seq, vim.fn.fnamemodify(rec.cwd, ':t'))
+end
+
+-- panel winbar: clickable tabs, active one highlighted, key hints right
+local function render_winbar()
+    local parts = {}
+    for i, rec in ipairs(state.terms) do
+        local hl = (i == state.active) and '%#TabLineSel#' or '%#TabLine#'
+        -- %<i>@...@...%X makes the label clickable, minwid = terminal index
+        table.insert(parts, ("%%%d@v:lua.require'utils.term'.click@%s %s %%X"):format(i, hl, rec_label(rec)))
+    end
+    -- trailing fill must not inherit the active tab's highlight
+    return table.concat(parts, ' ')
+        .. '%#TabLineFill# %= q:close <C-\\>:hide <Esc>:normal '
+end
+
+local function update_winbar()
+    local win = term_win()
+    if win then
+        vim.wo[win].winbar = #state.terms > 0 and render_winbar() or ''
+    end
+end
+
 local function open_panel()
     vim.cmd('botright ' .. panel_height() .. 'split')
     local win = vim.api.nvim_get_current_win()
@@ -68,25 +90,73 @@ local function open_panel()
     return win
 end
 
-local function create()
-    -- reuse the existing panel window: multiple terminals live as buffers
+-- q in normal mode: "close what is in front of me" — a finished task gets
+-- wiped, anything else just hides the panel (the process survives)
+local function setup_buffer_keys(buf)
+    vim.keymap.set('n', 'q', function()
+        local idx = find_rec_idx(vim.api.nvim_get_current_buf())
+        local rec = idx and state.terms[idx]
+        if rec and rec.kind == 'task' and rec.done then
+            state.active = idx
+            term.kill()
+            return
+        end
+        local win = term_win()
+        if win then
+            vim.api.nvim_win_close(win, true)
+        end
+    end, { buffer = buf, desc = 'close finished task / hide panel' })
+end
+
+-- shared creation path; kind is 'shell' or 'task' (cmd required for tasks)
+local function create(kind, cmd)
+    -- reuse the existing panel window: multiple terminals live as records
     -- inside the single panel (vscode terminal tabs), never stacked splits
     local win = term_win() or open_panel()
-    -- unlisted (kept out of the global tabline, the panel has its own winbar)
-    -- but not a scratch buffer (avoid bufhidden=wipe etc.)
+    -- unlisted (kept out of the global tabline) but not a scratch buffer
     local buf = vim.api.nvim_create_buf(false, false)
     vim.api.nvim_win_set_buf(win, buf)
-    vim.fn.termopen(vim.o.shell, { cwd = vim.fn.getcwd() })
-    table.insert(state.terms, buf)
-    state.active = #state.terms
-    -- stable creation-seq name for the winbar/statusline (monotonic, never
-    -- reused; list indices shift on kill, so don't use them as names)
+
     state.seq = state.seq + 1
-    pcall(
-        vim.api.nvim_buf_set_name,
-        buf,
-        ('term://%d:%s'):format(state.seq, vim.fn.fnamemodify(vim.fn.getcwd(), ':t'))
-    )
+    local rec = {
+        buf = buf,
+        kind = kind,
+        seq = state.seq,
+        cwd = vim.fn.getcwd(),
+        cmd = cmd,
+        done = false,
+        code = nil,
+    }
+
+    if kind == 'task' then
+        -- shell -c so aliases/env match an interactive session
+        local flag = vim.o.shell:lower():match('cmd%.exe$') and '/c' or '-c'
+        vim.fn.termopen({ vim.o.shell, flag, cmd }, {
+            cwd = rec.cwd,
+            on_exit = function(_, code)
+                vim.schedule(function()
+                    rec.done = true
+                    rec.code = code
+                    pcall(vim.api.nvim_buf_set_name, buf, ('task://%d:%s(%d)'):format(rec.seq, cmd, code))
+                    update_winbar()
+                    vim.notify(('task finished (%d): %s'):format(code, cmd), vim.log.levels.INFO)
+                end)
+            end,
+        })
+        state.last_cmd = cmd
+        pcall(vim.api.nvim_buf_set_name, buf, ('task://%d:%s'):format(rec.seq, cmd))
+    else
+        vim.fn.termopen(vim.o.shell, { cwd = rec.cwd })
+        pcall(
+            vim.api.nvim_buf_set_name,
+            buf,
+            ('term://%d:%s'):format(rec.seq, vim.fn.fnamemodify(rec.cwd, ':t'))
+        )
+    end
+
+    table.insert(state.terms, rec)
+    state.active = #state.terms
+    setup_buffer_keys(buf)
     update_winbar()
     vim.cmd.startinsert()
 end
@@ -94,18 +164,38 @@ end
 -- drop wiped terminal buffers from the state list
 vim.api.nvim_create_autocmd('BufWipeout', {
     callback = function(ev)
-        for i, buf in ipairs(state.terms) do
-            if buf == ev.buf then
-                table.remove(state.terms, i)
-                if state.active > #state.terms then
-                    state.active = #state.terms
-                end
-                update_winbar()
-                return
-            end
+        local idx = find_rec_idx(ev.buf)
+        if not idx then
+            return
         end
+        table.remove(state.terms, idx)
+        if state.active > #state.terms then
+            state.active = #state.terms
+        end
+        update_winbar()
     end,
 })
+
+-- interactive shells: `exit` wipes the buffer right away (no corpse).
+-- task buffers are kept on purpose and handled by on_exit instead
+vim.api.nvim_create_autocmd('TermClose', {
+    callback = function(ev)
+        local idx = find_rec_idx(ev.buf)
+        local rec = idx and state.terms[idx]
+        if not (rec and rec.kind == 'shell') then
+            return
+        end
+        vim.schedule(function()
+            if vim.api.nvim_buf_is_valid(ev.buf) then
+                pcall(vim.api.nvim_buf_delete, ev.buf, { force = true })
+            end
+        end)
+    end,
+})
+
+----------------------------------------------------------------------
+-- public api
+----------------------------------------------------------------------
 
 term.toggle = function()
     local win = term_win()
@@ -115,15 +205,29 @@ term.toggle = function()
     end
     if is_valid(state.active) then
         local w = open_panel()
-        vim.api.nvim_win_set_buf(w, state.terms[state.active])
+        vim.api.nvim_win_set_buf(w, state.terms[state.active].buf)
         update_winbar()
         vim.cmd.startinsert()
     else
-        create()
+        create('shell')
     end
 end
 
-term.new = create
+term.new = function()
+    create('shell')
+end
+
+term.run = function(cmd)
+    create('task', cmd)
+end
+
+term.rerun = function()
+    if state.last_cmd then
+        create('task', state.last_cmd)
+    else
+        vim.notify('no task to rerun yet', vim.log.levels.WARN)
+    end
+end
 
 term.cycle = function(delta)
     if #state.terms == 0 then
@@ -132,7 +236,7 @@ term.cycle = function(delta)
     state.active = ((state.active - 1 + delta) % #state.terms) + 1
     local win = term_win()
     if win then
-        vim.api.nvim_win_set_buf(win, state.terms[state.active])
+        vim.api.nvim_win_set_buf(win, state.terms[state.active].buf)
         vim.api.nvim_set_current_win(win)
         update_winbar()
         vim.cmd.startinsert()
@@ -140,15 +244,15 @@ term.cycle = function(delta)
 end
 
 term.kill = function()
-    local buf = state.terms[state.active]
-    if not buf then
+    local rec = state.terms[state.active]
+    if not rec then
         return
     end
     -- wiping a terminal buffer that is displayed in a window takes the
     -- window down with it (observed behavior), so don't rely on the window
     -- surviving: close the leftovers or reopen the panel as needed
     local win = term_win()
-    pcall(vim.api.nvim_buf_delete, buf, { force = true })
+    pcall(vim.api.nvim_buf_delete, rec.buf, { force = true })
     local win_alive = win and vim.api.nvim_win_is_valid(win)
     if #state.terms == 0 then
         if win_alive then
@@ -157,10 +261,10 @@ term.kill = function()
         return
     end
     if win_alive then
-        vim.api.nvim_win_set_buf(win, state.terms[state.active])
+        vim.api.nvim_win_set_buf(win, state.terms[state.active].buf)
     else
         local w = open_panel()
-        vim.api.nvim_win_set_buf(w, state.terms[state.active])
+        vim.api.nvim_win_set_buf(w, state.terms[state.active].buf)
         vim.cmd.startinsert()
     end
     update_winbar()
@@ -174,17 +278,26 @@ term.click = function(minwid)
     state.active = minwid
     local win = term_win()
     if win then
-        vim.api.nvim_win_set_buf(win, state.terms[minwid])
+        vim.api.nvim_win_set_buf(win, state.terms[minwid].buf)
         update_winbar()
     end
 end
 
--- statusline section: '2/3' (active/total), empty when no terminals exist
+-- statusline section: ' 2/3' (icon + active/total), empty when no terminals
 term.status = function()
     if #state.terms == 0 then
         return ''
     end
-    return ('%d/%d'):format(state.active, #state.terms)
+    -- leading nf-oct-terminal icon (U+F489, written as bytes on purpose)
+    return ('\xef\x92\x89 %d/%d'):format(state.active, #state.terms)
 end
+
+-- :TermRun {cmd} and its short alias :T
+vim.api.nvim_create_user_command('TermRun', function(ev)
+    term.run(ev.args)
+end, { nargs = '+', desc = 'run a command in a task terminal' })
+vim.api.nvim_create_user_command('T', function(ev)
+    term.run(ev.args)
+end, { nargs = '+', desc = 'alias of :TermRun' })
 
 return term

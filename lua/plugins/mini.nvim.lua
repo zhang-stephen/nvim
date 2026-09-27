@@ -22,8 +22,16 @@ return function()
     require('mini.pairs').setup({})
     require('mini.surround').setup({})
     require('mini.ai').setup({})
-    -- default layout plus a terminal section ('2/3') from utils/term
+    -- default layout plus a terminal section (' 2/3') from utils/term
     local statusline = require('mini.statusline')
+    -- dedicated section color: tokyonight's devinfo/fileinfo backgrounds are
+    -- nearly identical, so borrow a mode color for real contrast.
+    -- re-apply on colorscheme changes (themes reset highlight groups)
+    local function set_term_hl()
+        vim.api.nvim_set_hl(0, 'MiniStatuslineTerm', { link = 'MiniStatuslineModeVisual' })
+    end
+    set_term_hl()
+    vim.api.nvim_create_autocmd('ColorScheme', { callback = set_term_hl })
     statusline.setup({
         content = {
             active = function()
@@ -42,10 +50,11 @@ return function()
                 local location = statusline.section_location({ trunc_width = 75 })
                 return statusline.combine_groups({
                     { hl = mode_hl, strings = { mode } },
-                    { hl = 'MiniStatuslineDevinfo', strings = { git, gsdiff, diagnostics, terminals } },
+                    { hl = 'MiniStatuslineDevinfo', strings = { git, gsdiff, diagnostics } },
                     '%<',
                     { hl = 'MiniStatuslineFilename', strings = { filename } },
                     '%=',
+                    { hl = 'MiniStatuslineTerm', strings = { terminals } },
                     { hl = 'MiniStatuslineFileinfo', strings = { fileinfo } },
                     { hl = mode_hl, strings = { location } },
                 })

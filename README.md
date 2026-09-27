@@ -120,7 +120,7 @@ bpftrace scripts have no LSP — treat as plain text.
 | buffer | `]b` / `[b` cycle · `<leader>bd` close |
 | lsp | `gd` definition · `grr` references · `grn` rename · `gra` action · `K` hover · `<leader>ld` line diagnostics |
 | explorer | `<leader>e` mini.files |
-| terminal | `<C->` toggle panel · `<leader>tn` new · `<leader>t]`/`<leader>t[` cycle · `<leader>tx` kill |
+| terminal | `<C->` toggle panel · `<leader>tn` new shell · `<leader>t]`/`<leader>t[` cycle · `<leader>tx` kill · `<leader>tr` rerun task · `:TermRun`/`:T` run command |
 
 ## Verification checklist
 
