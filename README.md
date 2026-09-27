@@ -16,8 +16,14 @@ lua/
 │   ├── init.lua          -- module loader
 │   ├── options.lua       -- editor options (incl. OSC52 clipboard, winborder)
 │   ├── keymap.lua        -- declarative keymaps (<leader> groups: f/b/l/e)
-│   ├── plugins.lua       -- vim.pack specs + per-plugin setup
+│   ├── plugins.lua       -- vim.pack specs + setup dispatch
 │   └── lsp.lua           -- builtin vim.lsp.config (clangd / lua_ls / pyright)
+├── plugins/              -- one setup file per plugin, named by repo basename
+│   ├── tokyonight.nvim.lua
+│   ├── nvim-treesitter.lua
+│   ├── fzf-lua.lua
+│   ├── mini.nvim.lua
+│   └── blink.cmp.lua
 └── utils/
     └── platform.lua      -- os / ssh detection
 ```

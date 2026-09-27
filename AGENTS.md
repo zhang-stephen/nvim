@@ -15,6 +15,14 @@ Rules for AI agents (and humans) working on this repository. Read this file firs
 - Prefer direct, greppable code over table-driven indirection. A kv table + apply loop is
   **not** welcome where plain assignments read better (see `core/options.lua`).
 
+## Error handling
+
+- `pcall` is for **uncontrollable environments only**: availability guards on first run
+  (plugin not installed yet), non-require-able probes (`colorscheme`), or callbacks firing
+  on unknown inputs (`vim.treesitter.start` on parser-less filetypes). One per site, with a comment.
+- **Never** wrap setup calls in `pcall` defensively: a failing setup call is a config bug
+  and must surface loudly, not be swallowed.
+
 ## API conventions (modern API only)
 
 - Options: `vim.o.xx = yy` direct assignment. **Never** build `:set ...` command strings —
@@ -33,11 +41,14 @@ Rules for AI agents (and humans) working on this repository. Read this file firs
 ## Plugins
 
 - Plugin manager: builtin `vim.pack` only. No lazy.nvim/packer/plug unless the user asks for a migration.
-- Plugin declaration lives in `lua/core/plugins.lua`, split into two tables:
-  `repos` (pure specs: repo + version) and `configs` (per-plugin setup keyed by repo basename).
+- Plugin declarations live in `lua/core/plugins.lua` (`repos`: pure specs, repo + version only).
+- Per-plugin setup lives in `lua/plugins/<repo-basename>.lua`; each file returns a setup
+  function. `loadfile` (not `require`) is used so repo names with dots map 1:1 to file names.
+- Adding a plugin = one entry in `repos` + one file in `lua/plugins/`. State the reason first.
 - Clone URLs: SSH first (`git@github.com:...`), HTTPS fallback; controlled by
   `use_git_ssh` in `lua/settings/init.lua`.
-- Keep the plugin list small. Every new plugin needs a stated reason.
+- Lazy loading: only via `vim.pack.add(..., { load = false })` + manual `packadd()`.
+  Do not add it for startup-essential plugins; reserve for genuinely heavy optional ones.
 
 ## LSP
 

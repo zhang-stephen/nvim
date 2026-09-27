@@ -14,8 +14,14 @@ lua/
 │   ├── init.lua          -- 模块加载器
 │   ├── options.lua       -- 编辑器选项（含 OSC52 剪贴板、winborder）
 │   ├── keymap.lua        -- 声明式键位（<leader> 分组：f/b/l/e）
-│   ├── plugins.lua       -- vim.pack 插件声明 + 各插件 setup
+│   ├── plugins.lua       -- vim.pack 插件声明 + setup 调度
 │   └── lsp.lua           -- 内置 vim.lsp.config（clangd / lua_ls / pyright）
+├── plugins/              -- 每个插件一个 setup 文件，按 repo 名索引
+│   ├── tokyonight.nvim.lua
+│   ├── nvim-treesitter.lua
+│   ├── fzf-lua.lua
+│   ├── mini.nvim.lua
+│   └── blink.cmp.lua
 └── utils/
     └── platform.lua      -- 操作系统 / SSH 检测
 ```
