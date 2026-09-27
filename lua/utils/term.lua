@@ -39,12 +39,20 @@ local function open_panel()
 end
 
 local function create()
-    local win = open_panel()
+    -- reuse the existing panel window: multiple terminals live as buffers
+    -- inside the single panel (vscode terminal tabs), never stacked splits
+    local win = term_win() or open_panel()
     local buf = vim.api.nvim_create_buf(false, true)
     vim.api.nvim_win_set_buf(win, buf)
     vim.fn.termopen(vim.o.shell, { cwd = vim.fn.getcwd() })
     table.insert(state.terms, buf)
     state.active = #state.terms
+    -- readable name for the tabline/buffer list instead of '[No Name]'
+    pcall(
+        vim.api.nvim_buf_set_name,
+        buf,
+        ('term://%d:%s'):format(buf, vim.fn.fnamemodify(vim.fn.getcwd(), ':t'))
+    )
     vim.cmd.startinsert()
 end
 
