@@ -3,6 +3,18 @@
 local lsp = {}
 
 lsp.setup = function()
+    -- client capabilities, advertised to every server via the '*' config:
+    -- - workspace/didChangeWatchedFiles: let clangd register file watchers
+    --   (compile_commands.json / header changes without :LspRestart)
+    -- - blink.cmp: snippet completion and rich completion items
+    local capabilities = vim.lsp.protocol.make_client_capabilities()
+    capabilities.workspace.didChangeWatchedFiles = { dynamicRegistration = true }
+    local blink_ok, blink = pcall(require, 'blink.cmp')
+    if blink_ok then
+        capabilities = blink.get_lsp_capabilities(capabilities)
+    end
+    vim.lsp.config('*', { capabilities = capabilities })
+
     -- c/c++/ebpf
     -- project root is located by compile_commands.json (cmake: -DCMAKE_EXPORT_COMPILE_COMMANDS=ON)
     -- or compile_flags.txt (ebpf template in README)
