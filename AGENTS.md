@@ -15,6 +15,12 @@ Rules for AI agents (and humans) working on this repository. Read this file firs
 - Prefer direct, greppable code over table-driven indirection. A kv table + apply loop is
   **not** welcome where plain assignments read better (see `core/options.lua`).
 
+## Load order
+
+`core/init.lua`: options → plugins → lsp → **keymap last**. Keymaps may reference
+plugin/lsp functions and must work whether the rhs is a closure or a direct
+function reference.
+
 ## Error handling
 
 - `pcall` is for **uncontrollable environments only**: availability guards on first run
