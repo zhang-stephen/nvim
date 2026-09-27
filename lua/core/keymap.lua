@@ -26,8 +26,20 @@ keymap.setup = function()
     map('n', '[b', function()
         vim.cmd.bprevious()
     end, { desc = 'previous buffer' })
+    -- close buffer without wrecking window layout;
+    -- when only an untouched empty [No Name] buffer remains, quit entirely
     map('n', '<leader>bd', function()
-        require('mini.bufremove').delete() -- close buffer without wrecking window layout
+        require('mini.bufremove').delete()
+        local listed = vim.fn.getbufinfo({ buflisted = 1 })
+        local b = listed[1]
+        if #listed == 1
+            and b.name == ''
+            and b.changed == 0
+            and b.linecount == 1
+            and vim.api.nvim_buf_get_lines(b.bufnr, 0, 1, false)[1] == ''
+        then
+            vim.cmd('confirm quitall')
+        end
     end, { desc = 'close current buffer' })
 
     -- file explorer (mini.files)
