@@ -116,6 +116,7 @@ bpftrace 脚本没有 LSP，当普通文本处理。
 | buffer | `]b` / `[b` 切换 · `<leader>bd` 关闭 |
 | lsp | `gd` 定义 · `grr` 引用 · `grn` 重命名 · `gra` code action · `K` 文档 · `<leader>ld` 行诊断 |
 | explorer | `<leader>e` 文件管理器 |
+| terminal | `<C->` 面板开关 · `<leader>tn` 新建 · `<leader>t]`/`<leader>t[` 切换 · `<leader>tx` 关闭 |
 
 ## 验证清单
 

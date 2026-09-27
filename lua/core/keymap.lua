@@ -84,6 +84,23 @@ keymap.setup = function()
     map('t', '<C-j>', '<C-\\><C-w>j', { desc = 'switch to down window' })
     map('t', '<C-k>', '<C-\\><C-w>k', { desc = 'switch to up window' })
     map('t', '<C-l>', '<C-\\><C-w>l', { desc = 'switch to right window' })
+
+    -- terminal panel (vscode-style bottom dock)
+    map({ 'n', 't' }, '<C-\\>', function()
+        require('utils.term').toggle()
+    end, { desc = 'toggle terminal panel' })
+    map('n', '<leader>tn', function()
+        require('utils.term').new()
+    end, { desc = 'new terminal' })
+    map('n', '<leader>t]', function()
+        require('utils.term').cycle(1)
+    end, { desc = 'next terminal' })
+    map('n', '<leader>t[', function()
+        require('utils.term').cycle(-1)
+    end, { desc = 'previous terminal' })
+    map('n', '<leader>tx', function()
+        require('utils.term').kill()
+    end, { desc = 'kill current terminal' })
 end
 
 return keymap
