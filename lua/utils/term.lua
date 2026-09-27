@@ -10,7 +10,7 @@ local HEIGHT_RATIO = 0.3
 local state = { terms = {}, active = 0, seq = 0, last_cmd = nil }
 
 -- terminal program: prefer pwsh on windows. msix (store) pwsh hangs when
--- spawned by libuv directly, so relay through cmd — no hardcoded paths,
+-- spawned by libuv directly, so relay through cmd - no hardcoded paths,
 -- no vim.o.shell pollution (:!/system() keep the system default)
 local shell_argv = nil -- nil means use vim.o.shell verbatim
 if vim.fn.has('win32') == 1 and vim.fn.executable('pwsh') == 1 then
@@ -68,7 +68,7 @@ end
 -- express a task's exit state)
 local function rec_label(rec)
     if rec.kind == 'task' then
-        -- '▶ ' (U+25B6, written as bytes) marks task terminals
+        -- triangle play glyph (U+25B6, written as bytes) marks task terminals
         local label = ('\xe2\x96\xb6 %d:%s'):format(rec.seq, rec.cmd)
         if rec.done then
             -- bare exit code: 0 is universally understood as success
@@ -107,7 +107,7 @@ local function open_panel()
     return win
 end
 
--- q in normal mode: "close what is in front of me" — a finished task gets
+-- q in normal mode: "close what is in front of me" - a finished task gets
 -- wiped, anything else just hides the panel (the process survives)
 local function setup_buffer_keys(buf)
     vim.keymap.set('n', 'q', function()

@@ -6,23 +6,26 @@
 ## 目录结构
 
 ```
-init.lua
+init.lua                  -- 版本守卫，然后平级调用三层
 stylua.toml               -- 4 空格缩进、单引号、调用带括号、Unix 换行
 lua/
-├── settings/init.lua     -- 用户可调设置（use_git_ssh）
+├── settings.lua          -- 用户可调设置（use_git_ssh）
 ├── core/
-│   ├── init.lua          -- 模块加载器
+│   ├── init.lua          -- options → keymap → plugins → lsp
 │   ├── options.lua       -- 编辑器选项（含 OSC52 剪贴板、winborder）
 │   ├── keymap.lua        -- 声明式键位（<leader> 分组：f/b/l/e）
-│   ├── plugins.lua       -- vim.pack 插件声明 + setup 调度
+│   ├── plugins.lua       -- vim.pack 插件声明 + 安装（基础设施）
 │   └── lsp.lua           -- 内置 vim.lsp.config（clangd / lua_ls / pyright）
-├── plugins/              -- 每个插件一个 setup 文件，按 repo 名索引
+├── plugins/              -- 插件个性化设置，每个 repo 名一个文件
+│   ├── init.lua          -- setup 调度（目录扫描）
 │   ├── tokyonight.nvim.lua
 │   ├── nvim-treesitter.lua
 │   ├── fzf-lua.lua
 │   ├── mini.nvim.lua
-│   └── blink.cmp.lua
+│   ├── blink.cmp.lua
+│   └── gitsigns.nvim.lua
 └── utils/                -- 手写工具模块（见其 AGENTS.md）
+    ├── init.lua          -- require 有副作用的模块
     └── term.lua          -- panel 式双模终端管理器
 ```
 

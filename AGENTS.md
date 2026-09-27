@@ -1,4 +1,4 @@
-# AGENTS.md — constraints for AI agents
+# AGENTS.md -  constraints for AI agents
 
 Rules for AI agents (and humans) working on this repository. Read this file first.
 
@@ -6,18 +6,31 @@ Rules for AI agents (and humans) working on this repository. Read this file firs
 
 - All code, comments, commit messages, and docs in **English**.
 - Sole exception: `README_zh.md` (Chinese mirror of `README.md`).
-- `README.md` and `README_zh.md` must be updated **together** — never let them drift.
+- `README.md` and `README_zh.md` must be updated **together** -  never let them drift.
+
+## Character set
+
+- Lua sources are **ASCII-only**. Non-ASCII symbols (nerd font glyphs, markers)
+  are written as byte escapes (`'\xef\x81\x97'`), never as literal characters -
+  literals have been silently dropped or mangled by tooling before.
+- Docs keep non-ASCII only where it carries meaning: tree-drawing characters in
+  layout diagrams, CJK in `README_zh.md` and its link. Prose punctuation
+  (arrows, dashes) stays ASCII.
 
 ## Code style
 
 - `stylua.toml` is authoritative: 4-space indent, single quotes, always call parentheses, Unix line endings.
-- Module pattern: `local M = {}` → `M.setup = function() ... end` → `return M`.
+- Module pattern: `local M = {}` -> `M.setup = function() ... end` -> `return M`.
 - Prefer direct, greppable code over table-driven indirection. A kv table + apply loop is
   **not** welcome where plain assignments read better (see `core/options.lua`).
 
 ## Load order
 
-`core/init.lua`: options → plugins → lsp → **keymap last**. Keymaps may reference
+`init.lua` calls the three layers flat: **core** -> **plugins** -> **utils**.
+Inside core: options -> keymap -> plugins (`vim.pack.add` only, infrastructure) ->
+lsp (last, because `capabilities()` requires blink.cmp from the rtp).
+`lua/plugins/` holds only per-plugin personalization setups, dispatched via
+`vim.pack.get()` (registry-driven, no second list). Keymaps may reference
 plugin/lsp functions and must work whether the rhs is a closure or a direct
 function reference.
 
@@ -31,11 +44,15 @@ function reference.
 
 ## API conventions (modern API only)
 
-- Options: `vim.o.xx = yy` direct assignment. **Never** build `:set ...` command strings —
+- Options: `vim.o.xx = yy` direct assignment. **Never** build `:set ...` command strings - 
   that style existed only when there was no proper API.
 - Keymaps: `vim.keymap.set` with **function rhs** (`vim.cmd.bnext()`, `require(...)` calls).
   String rhs is allowed only for pure key sequences (e.g. `'d$'`, `'<C-\\><C-n>'`).
 - Highlights: `vim.api.nvim_set_hl`, not `:highlight` commands.
+- Paths: resolve config/plugin files through the runtimepath (`require`,
+  `vim.api.nvim_get_runtime_file`). **Never** splice paths out of
+  `debug.getinfo()` + `fnamemodify` -  if the file was reached via `require`,
+  its directory is on the rtp by definition.
 
 ## Versioning
 
@@ -48,14 +65,15 @@ function reference.
 
 - Plugin manager: builtin `vim.pack` only. No lazy.nvim/packer/plug unless the user asks for a migration.
 - Plugin declarations live in `lua/core/plugins.lua` (`repos`: pure specs, repo + version only).
-- Per-plugin setup lives in `lua/plugins/<repo-basename>.lua`; each file returns a setup
+- Per-plugin setup lives in `lua/plugins/<repo-basename>.lua`, dispatched by
+  `lua/plugins/init.lua` via `vim.pack.get()`; each file returns a setup
   function. `loadfile` (not `require`) is used so repo names with dots map 1:1 to file names.
 - Adding a plugin = one entry in `repos` + one file in `lua/plugins/`. State the reason first.
 - Clone URLs: SSH first (`git@github.com:...`), HTTPS fallback; controlled by
-  `use_git_ssh` in `lua/settings/init.lua`.
+  `use_git_ssh` in `lua/settings.lua`.
 - Lazy loading: only via `vim.pack.add(..., { load = false })` + manual `packadd()`.
   Do not add it for startup-essential plugins; reserve for genuinely heavy optional ones.
-- Terminal: self-hosted `lua/utils/term.lua` — see `lua/utils/AGENTS.md` for its
+- Terminal: self-hosted `lua/utils/term.lua` -  see `lua/utils/AGENTS.md` for its
   design rules (dual-mode, window-death, no leader in terminal mode, toggleterm
   re-evaluation rule).
 

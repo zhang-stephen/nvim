@@ -68,10 +68,11 @@ options.setup = function()
         virtual_text = true,
         signs = {
             text = {
-                [vim.diagnostic.severity.ERROR] = '',
-                [vim.diagnostic.severity.WARN] = '',
-                [vim.diagnostic.severity.INFO] = '',
-                [vim.diagnostic.severity.HINT] = '',
+                -- nerd font glyphs as byte escapes (literals get mangled)
+                [vim.diagnostic.severity.ERROR] = '\xef\x81\x97',
+                [vim.diagnostic.severity.WARN] = '\xef\x81\xb1',
+                [vim.diagnostic.severity.INFO] = '\xef\x81\x9a',
+                [vim.diagnostic.severity.HINT] = '\xef\x83\xab',
             },
         },
         underline = true,

@@ -61,4 +61,6 @@ lsp.setup = function()
     vim.lsp.enable({ 'clangd', 'lua_ls', 'pyright' })
 end
 
+-- capabilities() requires blink.cmp from the rtp, so core/init.lua loads
+-- this after core/plugins (vim.pack add)
 return lsp
