@@ -9,6 +9,23 @@ local HEIGHT_RATIO = 0.3
 
 local state = { terms = {}, active = 0, seq = 0, last_cmd = nil }
 
+-- terminal program: prefer pwsh on windows. msix (store) pwsh hangs when
+-- spawned by libuv directly, so relay through cmd — no hardcoded paths,
+-- no vim.o.shell pollution (:!/system() keep the system default)
+local shell_argv = nil -- nil means use vim.o.shell verbatim
+if vim.fn.has('win32') == 1 and vim.fn.executable('pwsh') == 1 then
+    shell_argv = { 'cmd.exe', '/c', 'pwsh' }
+end
+
+-- argv for a delegated task command, piggybacking on the chosen shell
+local function task_argv(cmd)
+    if shell_argv then
+        return vim.list_extend(vim.deepcopy(shell_argv), { '-c', cmd })
+    end
+    local flag = vim.o.shell:lower():match('cmd%.exe$') and '/c' or '-c'
+    return { vim.o.shell, flag, cmd }
+end
+
 ----------------------------------------------------------------------
 -- helpers
 ----------------------------------------------------------------------
@@ -130,8 +147,7 @@ local function create(kind, cmd)
 
     if kind == 'task' then
         -- shell -c so aliases/env match an interactive session
-        local flag = vim.o.shell:lower():match('cmd%.exe$') and '/c' or '-c'
-        vim.fn.termopen({ vim.o.shell, flag, cmd }, {
+        vim.fn.termopen(task_argv(cmd), {
             cwd = rec.cwd,
             on_exit = function(_, code)
                 vim.schedule(function()
@@ -146,7 +162,7 @@ local function create(kind, cmd)
         state.last_cmd = cmd
         pcall(vim.api.nvim_buf_set_name, buf, ('task://%d:%s'):format(rec.seq, cmd))
     else
-        vim.fn.termopen(vim.o.shell, { cwd = rec.cwd })
+        vim.fn.termopen(shell_argv or vim.o.shell, { cwd = rec.cwd })
         pcall(
             vim.api.nvim_buf_set_name,
             buf,

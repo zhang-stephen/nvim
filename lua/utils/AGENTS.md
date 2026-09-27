@@ -38,3 +38,8 @@ Use builtin `vim.fn.has()` (`'win32'` / `'macunix'` / `'unix'`) — never
 `os_uname().sysname`, which msys2/mingw neovim builds report as MSYS-style
 strings. (The former `platform.lua` wrapper was retired: the builtin API made
 it a one-line shell.)
+
+The Microsoft Store (MSIX) pwsh hangs when spawned by libuv directly (its
+WindowsApps stubs need an activation context). Terminals therefore relay
+through `cmd /c pwsh` (see `term.lua`'s `shell_argv`); `vim.o.shell` is left
+untouched so `:!`/`system()` keep the system default.

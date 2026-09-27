@@ -63,13 +63,6 @@ options.setup = function()
     -- to the system clipboard; works anywhere the terminal supports it
     vim.g.clipboard = 'osc52'
 
-    -- windows: prefer pwsh for the integrated terminal (guarded: keep the
-    -- default when pwsh is not installed); other systems keep the default.
-    -- has('win32') is authoritative: msys2 builds lie in os_uname().sysname
-    if vim.fn.has('win32') == 1 and vim.fn.executable('pwsh') == 1 then
-        vim.o.shell = 'pwsh'
-    end
-
     -- diagnostics appearance: nerd font signs instead of the default E/W/I/H letters
     vim.diagnostic.config({
         virtual_text = true,
