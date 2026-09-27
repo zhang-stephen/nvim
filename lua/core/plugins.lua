@@ -41,9 +41,12 @@ local function build_specs(use_ssh)
     return specs
 end
 
--- run lua/plugins/<name>.lua for every repo that ships one
+-- run lua/plugins/<name>.lua for every repo that ships one.
+-- resolve relative to this script (not stdpath) so the config also works
+-- when loaded from an arbitrary location via `nvim -u`
 local function run_setups()
-    local dir = vim.fn.stdpath('config') .. '/lua/plugins/'
+    local this = debug.getinfo(1, 'S').source:sub(2) -- .../lua/core/plugins.lua
+    local dir = vim.fn.fnamemodify(this, ':p:h:h') .. '/plugins/'
     for _, entry in ipairs(repos) do
         local name = entry[1]:match('[^/]+$')
         local chunk = loadfile(dir .. name .. '.lua')

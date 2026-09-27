@@ -22,7 +22,36 @@ return function()
     require('mini.pairs').setup({})
     require('mini.surround').setup({})
     require('mini.ai').setup({})
-    require('mini.statusline').setup({})
+    -- default layout plus a terminal section ('2/3') from utils/term
+    local statusline = require('mini.statusline')
+    statusline.setup({
+        content = {
+            active = function()
+                local mode, mode_hl = statusline.section_mode({ trunc_width = 120 })
+                local git = statusline.section_git({ trunc_width = 40 })
+                -- diff counts come from gitsigns (mini.diff was replaced)
+                local gsdiff = ''
+                local dict = vim.b.gitsigns_status_dict
+                if dict then
+                    gsdiff = ('+%d ~%d -%d'):format(dict.added or 0, dict.changed or 0, dict.removed or 0)
+                end
+                local diagnostics = statusline.section_diagnostics({ trunc_width = 75 })
+                local terminals = require('utils.term').status()
+                local filename = statusline.section_filename({ trunc_width = 140 })
+                local fileinfo = statusline.section_fileinfo({ trunc_width = 120 })
+                local location = statusline.section_location({ trunc_width = 75 })
+                return statusline.combine_groups({
+                    { hl = mode_hl, strings = { mode } },
+                    { hl = 'MiniStatuslineDevinfo', strings = { git, gsdiff, diagnostics, terminals } },
+                    '%<',
+                    { hl = 'MiniStatuslineFilename', strings = { filename } },
+                    '%=',
+                    { hl = 'MiniStatuslineFileinfo', strings = { fileinfo } },
+                    { hl = mode_hl, strings = { location } },
+                })
+            end,
+        },
+    })
     require('mini.notify').setup({})
     require('mini.indentscope').setup({})
     require('mini.bufremove').setup({})
