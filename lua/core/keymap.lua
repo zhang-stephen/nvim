@@ -27,7 +27,7 @@ keymap.setup = function()
         vim.cmd.bprevious()
     end, { desc = 'previous buffer' })
     map('n', '<leader>bd', function()
-        vim.cmd.bdelete()
+        require('mini.bufremove').delete() -- close buffer without wrecking window layout
     end, { desc = 'close current buffer' })
 
     -- file explorer (mini.files)
