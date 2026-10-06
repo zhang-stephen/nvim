@@ -137,6 +137,16 @@ bpftrace scripts have no LSP -  treat as plain text.
   `tree-sitter` CLI (>= 0.25) plus a C compiler -  install the system
   dependencies above; if the distro's `tree-sitter-cli` is older, use
   `cargo install tree-sitter-cli` or `npm i -g tree-sitter-cli`.
+- **some ctrl/alt keys never reach nvim (macos + iterm2)**: three layers can eat
+  keys before nvim sees them. macos shortcuts intercept first -  ctrl+space is
+  bound to input-source switching and ctrl+arrows to mission control by
+  default (system settings -> keyboard -> keyboard shortcuts). iterm2 then
+  decides what option sends: profiles -> keys -> option key must be **esc+**
+  for `<m->`/`<a->` mappings (normal mode sends special characters instead;
+  verify with `cat -v` -  option+x should print `^[x`, not `≈`). finally the
+  legacy terminal encoding cannot distinguish c-i/tab, c-m/enter, c-j/lf or
+  ctrl+shift+letter; the kitty keyboard protocol (nvim 0.12 tui + iterm2
+  3.5+, auto-negotiated) fixes that layer.
 - **icons show as boxes**: run `printf '\ue0b0 \uf07b \uf15b\n'` in the terminal.
   Boxes there too -> the *local* terminal font is not a nerd font (install Maple Mono NF CN
   locally and select it in the terminal profile). Glyphs fine -> report a config issue.

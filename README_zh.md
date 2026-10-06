@@ -131,6 +131,13 @@ bpftrace 脚本没有 LSP，当普通文本处理。
 - **treesitter parser 编译失败**：`main` 分支靠 `tree-sitter` CLI（>= 0.25）加 C 编译器编译 parser，
   装上面的系统依赖；发行版源里的 `tree-sitter-cli` 版本太旧时，改用
   `cargo install tree-sitter-cli` 或 `npm i -g tree-sitter-cli`
+- **部分 ctrl/alt 按键传不到 nvim（macOS + iTerm2）**：按键到达 nvim 之前有三层可能拦截。
+  首先是 macOS 系统快捷键：ctrl+space 默认绑定输入法切换、ctrl+方向键默认归属调度中心
+  （系统设置 → 键盘 → 键盘快捷键里关掉）。其次是 iTerm2 对 option 键的处理：
+  profiles → keys → option key 必须设为 **esc+**，`<m->`/`<a->` 映射才生效
+  （normal 模式发送的是特殊字符；验证方法：`cat -v` 后按 option+x，应显示 `^[x` 而不是 `≈`）。
+  最后是终端 legacy 编码的盲区：c-i/tab、c-m/enter、c-j/lf、ctrl+shift+字母在字节层面无法区分，
+  这层由 kitty keyboard protocol 解决（nvim 0.12 TUI + iTerm2 3.5+，自动协商）。
 - **图标显示为方块**：在终端里跑 `printf '\ue0b0 \uf07b \uf15b\n'`。
   这里也是方块 → *本地*终端字体不是 nerd font（本地装 Maple Mono NF CN 并在终端 profile 里选中）；
   字形正常 → 是配置问题，报回来。
