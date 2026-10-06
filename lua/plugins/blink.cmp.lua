@@ -1,5 +1,24 @@
 -- blink.cmp: completion UI (lsp only provides data; popup/fuzzy/docs live here)
 
+-- vscode-style completion keys (blink.cmp dsl, not vim keymaps): enter/tab
+-- accept, esc dismisses the menu (falls back to leaving insert mode when no
+-- menu is open)
+local keymap = {
+    preset = 'none',
+    ['<C-space>'] = { 'show', 'show_documentation', 'hide_documentation' },
+    ['<Esc>'] = { 'cancel', 'fallback' },
+    ['<CR>'] = { 'accept', 'fallback' },
+    ['<Tab>'] = { 'select_and_accept', 'snippet_forward', 'fallback' },
+    ['<S-Tab>'] = { 'snippet_backward', 'fallback' },
+    ['<Up>'] = { 'select_prev', 'fallback' },
+    ['<Down>'] = { 'select_next', 'fallback' },
+    ['<C-p>'] = { 'select_prev' },
+    ['<C-n>'] = { 'select_next' },
+    ['<C-b>'] = { 'scroll_documentation_up', 'fallback' },
+    ['<C-f>'] = { 'scroll_documentation_down', 'fallback' },
+    ['<C-k>'] = { 'show_signature', 'hide_signature', 'fallback' },
+}
+
 return function()
     -- availability guard: warn + skip while the plugin is not installed yet (first run)
     local ok, blink = pcall(require, 'blink.cmp')
@@ -19,7 +38,7 @@ return function()
         end
     end
     blink.setup({
-        keymap = { preset = 'default' }, -- enter to confirm, tab/s-tab to select, c-space to trigger
+        keymap = keymap,
         completion = { documentation = { auto_show = true } },
         sources = { default = { 'lsp', 'path', 'buffer' } },
         -- prebuilt rust fuzzy matcher, downloaded on demand from github
