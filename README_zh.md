@@ -1,7 +1,6 @@
 # nvim 配置（v2 重写版）
 
-个人 neovim 配置。**本分支（`v2`）是最低兼容 neovim 0.12 的重写**，
-面向 SSH 实验机自包含设计。旧配置在 `dev`/`master` 分支。
+个人 neovim 配置。**本分支（`v2`）是最低兼容 neovim 0.12 的重写**，面向 SSH 实验机自包含设计。旧配置在 `dev`/`master` 分支。
 
 ## 目录结构
 
@@ -32,14 +31,10 @@ lua/
 ## 设计决策
 
 - **最低兼容版本：neovim 0.12**（`init.lua` 硬守卫；以后按需提升下限）。
-- **插件管理器：内置 `vim.pack`**（0.12+）。零 bootstrap，克隆本仓库即可上岗。
-  声明就是 `{ src, version }` 表；将来迁 lazy.nvim 只需改 `plugins.lua` 一个文件。
-- **插件 clone 默认走 SSH**（`git@github.com:...`），失败自动回退 HTTPS——
-  见 `lua/settings/init.lua` 的 `use_git_ssh`。
-- **不用 nvim-lspconfig**：服务器用内置 `vim.lsp.config()` + `vim.lsp.enable()` 声明，
-  每个约 10 行显式配置，0.11–0.12+ 行为一致。
-- **不用 mason**：LSP 服务器和命令行依赖全部走发行版包（SSH 机器上可预期，
-  避免从 GitHub 下二进制）。
+- **插件管理器：内置 `vim.pack`**（0.12+）。零 bootstrap，克隆本仓库即可上岗。声明就是 `{ src, version }` 表；将来迁 lazy.nvim 只需改 `plugins.lua` 一个文件。
+- **插件 clone 默认走 SSH**（`git@github.com:...`），失败自动回退 HTTPS——见 `lua/settings.lua` 的 `use_git_ssh`。
+- **不用 nvim-lspconfig**：服务器用内置 `vim.lsp.config()` + `vim.lsp.enable()` 声明，每个约 10 行显式配置，0.11–0.12+ 行为一致。
+- **不用 mason**：LSP 服务器和命令行依赖全部走发行版包（SSH 机器上可预期，避免从 GitHub 下二进制）。
 - **treesitter 用 `main` 分支**（活跃开发线，要求 0.11+）。
 - **图标开启**——nerd font（如 Maple Mono NF CN）只需装在*本地*终端，远端机器无需任何处理。
 
@@ -63,8 +58,7 @@ brew install fzf ripgrep tree-sitter lua-language-server pyright
 sudo apt install pyright 2>/dev/null || pip install pyright
 ```
 
-发行版源没有 `lua-language-server` 时（如 fedora），装官方 release 二进制
-（版本号去 releases 页看最新；arm 机器用 `linux-arm64.tar.gz`）：
+发行版源没有 `lua-language-server` 时（如 fedora），装官方 release 二进制（版本号去 releases 页看最新；arm 机器用 `linux-arm64.tar.gz`）：
 
 ```bash
 mkdir -p ~/.local/share/lua-language-server
@@ -125,19 +119,7 @@ bpftrace 脚本没有 LSP，当普通文本处理。
 
 ## 常见问题
 
-- **blink.cmp rust 模糊匹配库缺失**：跟随 main 时预编译库按需从 GitHub releases
-  下载（无需工具链，见 `lua/plugins/blink.cmp.lua` 里的 `blink.download({ match = '*' })`）；
-  下载受限时静默回落到纯 Lua 匹配器
-- **treesitter parser 编译失败**：`main` 分支靠 `tree-sitter` CLI（>= 0.25）加 C 编译器编译 parser，
-  装上面的系统依赖；发行版源里的 `tree-sitter-cli` 版本太旧时，改用
-  `cargo install tree-sitter-cli` 或 `npm i -g tree-sitter-cli`
-- **部分 ctrl/alt 按键传不到 nvim（macOS + iTerm2）**：按键到达 nvim 之前有三层可能拦截。
-  首先是 macOS 系统快捷键：ctrl+space 默认绑定输入法切换、ctrl+方向键默认归属调度中心
-  （系统设置 → 键盘 → 键盘快捷键里关掉）。其次是 iTerm2 对 option 键的处理：
-  profiles → keys → option key 必须设为 **esc+**，`<m->`/`<a->` 映射才生效
-  （normal 模式发送的是特殊字符；验证方法：`cat -v` 后按 option+x，应显示 `^[x` 而不是 `≈`）。
-  最后是终端 legacy 编码的盲区：c-i/tab、c-m/enter、c-j/lf、ctrl+shift+字母在字节层面无法区分，
-  这层由 kitty keyboard protocol 解决（nvim 0.12 TUI + iTerm2 3.5+，自动协商）。
-- **图标显示为方块**：在终端里跑 `printf '\ue0b0 \uf07b \uf15b\n'`。
-  这里也是方块 → *本地*终端字体不是 nerd font（本地装 Maple Mono NF CN 并在终端 profile 里选中）；
-  字形正常 → 是配置问题，报回来。
+- **blink.cmp rust 模糊匹配库缺失**：跟随 main 时预编译库按需从 GitHub releases 下载（无需工具链，见 `lua/plugins/blink.cmp.lua` 里的 `blink.download({ match = '*' })`）；下载受限时静默回落到纯 Lua 匹配器
+- **treesitter parser 编译失败**：`main` 分支靠 `tree-sitter` CLI（>= 0.25）加 C 编译器编译 parser，装上面的系统依赖；发行版源里的 `tree-sitter-cli` 版本太旧时，改用 `cargo install tree-sitter-cli` 或 `npm i -g tree-sitter-cli`
+- **部分 ctrl/alt 按键传不到 nvim（macOS + iTerm2）**：按键到达 nvim 之前有三层可能拦截。首先是 macOS 系统快捷键：ctrl+space 默认绑定输入法切换、ctrl+方向键默认归属调度中心（系统设置 → 键盘 → 键盘快捷键里关掉）。其次是 iTerm2 对 option 键的处理：profiles → keys → option key 必须设为 **esc+**，`<m->`/`<a->` 映射才生效（normal 模式发送的是特殊字符；验证方法：`cat -v` 后按 option+x，应显示 `^[x` 而不是 `≈`）。最后是终端 legacy 编码的盲区：c-i/tab、c-m/enter、c-j/lf、ctrl+shift+字母在字节层面无法区分，这层由 kitty keyboard protocol 解决（nvim 0.12 TUI + iTerm2 3.5+，自动协商）。
+- **图标显示为方块**：在终端里跑 `printf '\ue0b0 \uf07b \uf15b\n'`。这里也是方块 → *本地*终端字体不是 nerd font（本地装 Maple Mono NF CN 并在终端 profile 里选中）；字形正常 → 是配置问题，报回来。
