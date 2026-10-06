@@ -29,8 +29,8 @@ Rules for AI agents (and humans) working on this repository. Read this file firs
 `init.lua` calls the three layers flat: **core** -> **plugins** -> **utils**.
 Inside core: options -> keymap -> plugins (`vim.pack.add` only, infrastructure) ->
 lsp (last, because `capabilities()` requires blink.cmp from the rtp).
-`lua/plugins/` holds only per-plugin personalization setups, dispatched via
-`vim.pack.get()` (registry-driven, no second list). Keymaps may reference
+`lua/plugins/` holds only per-plugin personalization setups, dispatched via an
+explicit ordered list in `lua/plugins/init.lua` (independent of the registry). Keymaps may reference
 plugin/lsp functions and must work whether the rhs is a closure or a direct
 function reference.
 
@@ -66,9 +66,12 @@ function reference.
 - Plugin manager: builtin `vim.pack` only. No lazy.nvim/packer/plug unless the user asks for a migration.
 - Plugin declarations live in `lua/core/plugins.lua` (`repos`: pure specs, repo + version only).
 - Per-plugin setup lives in `lua/plugins/<repo-basename>.lua`, dispatched by
-  `lua/plugins/init.lua` via `vim.pack.get()`; each file returns a setup
-  function. `loadfile` (not `require`) is used so repo names with dots map 1:1 to file names.
-- Adding a plugin = one entry in `repos` + one file in `lua/plugins/`. State the reason first.
+  an explicit ordered list in `lua/plugins/init.lua`; each file returns a setup
+  function. `loadfile` (not `require`) is used because repo names with dots
+  cannot be `require()`'d -  dots become path separators. Each setup guards
+  plugin availability itself: warn + skip when the plugin is absent.
+- Adding a plugin = one entry in `repos` + one file in `lua/plugins/` + one
+  entry in the `lua/plugins/init.lua` list. State the reason first.
 - Clone URLs: SSH first (`git@github.com:...`), HTTPS fallback; controlled by
   `use_git_ssh` in `lua/settings.lua`.
 - Lazy loading: only via `vim.pack.add(..., { load = false })` + manual `packadd()`.

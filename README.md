@@ -19,7 +19,7 @@ lua/
 │   ├── plugins.lua       -- vim.pack registry + install (infrastructure)
 │   └── lsp.lua           -- builtin vim.lsp.config (clangd / lua_ls / pyright)
 ├── plugins/              -- per-plugin personalization, one file per repo basename
-│   ├── init.lua          -- setup dispatch (directory scan)
+│   ├── init.lua          -- setup dispatch (explicit ordered list)
 │   ├── tokyonight.nvim.lua
 │   ├── nvim-treesitter.lua
 │   ├── fzf-lua.lua
@@ -57,9 +57,11 @@ nvim   # first startup installs plugins (one confirmation prompt)
 
 ```bash
 # debian 13
-sudo apt install git gcc fzf ripgrep clangd lua-language-server
+sudo apt install git gcc fzf ripgrep clangd lua-language-server tree-sitter-cli
 # fedora 44
-sudo dnf install git gcc fzf ripgrep clang-tools-extra lua-language-server
+sudo dnf install git gcc fzf ripgrep clang-tools-extra lua-language-server tree-sitter-cli
+# macos (git/clangd ship with the xcode command line tools)
+brew install fzf ripgrep tree-sitter lua-language-server pyright
 # python lsp (either; pulls in nodejs)
 sudo apt install pyright 2>/dev/null || pip install pyright
 ```
@@ -125,21 +127,16 @@ bpftrace scripts have no LSP -  treat as plain text.
 | explorer | `<leader>e` mini.files |
 | terminal | `<C->` toggle panel | `<leader>tn` new shell | `<leader>t]`/`<leader>t[` cycle | `<leader>tx` kill | `<leader>tr` rerun task | `:TermRun`/`:T` run command |
 
-## Verification checklist
-
-- [ ] `nvim --version` >= 0.12
-- [ ] `.c` file: highlighting works; `gd`, `K`, `grr` work
-- [ ] completion popup appears while typing, docs auto-expand
-- [ ] `<leader>ff` / `<leader>fg` / `<leader>fb` work
-- [ ] `<leader>e` opens file explorer; `]b` `[b` cycle buffer tabs
-- [ ] over SSH: yank reaches the local clipboard (OSC52)
-- [ ] `:checkhealth vim.lsp` is green
-
 ## FAQ
 
-- **blink.cmp fuzzy matcher download fails** (restricted network): set
-  `fuzzy.implementation = 'lua'` in `plugins.lua`.
-- **treesitter parser build fails**: missing `gcc` -  install the system dependencies above.
+- **blink.cmp rust fuzzy library missing**: on `main` the prebuilt library is
+  downloaded on demand from github releases (no toolchain needed -  see
+  `blink.download({ match = '*' })` in `lua/plugins/blink.cmp.lua`); if the
+  download is blocked, completion silently falls back to the lua matcher.
+- **treesitter parser build fails**: the `main` branch builds parsers via the
+  `tree-sitter` CLI (>= 0.25) plus a C compiler -  install the system
+  dependencies above; if the distro's `tree-sitter-cli` is older, use
+  `cargo install tree-sitter-cli` or `npm i -g tree-sitter-cli`.
 - **icons show as boxes**: run `printf '\ue0b0 \uf07b \uf15b\n'` in the terminal.
   Boxes there too -> the *local* terminal font is not a nerd font (install Maple Mono NF CN
   locally and select it in the terminal profile). Glyphs fine -> report a config issue.

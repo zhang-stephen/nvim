@@ -17,7 +17,7 @@ lua/
 │   ├── plugins.lua       -- vim.pack 插件声明 + 安装（基础设施）
 │   └── lsp.lua           -- 内置 vim.lsp.config（clangd / lua_ls / pyright）
 ├── plugins/              -- 插件个性化设置，每个 repo 名一个文件
-│   ├── init.lua          -- setup 调度（目录扫描）
+│   ├── init.lua          -- setup 调度（显式有序列表）
 │   ├── tokyonight.nvim.lua
 │   ├── nvim-treesitter.lua
 │   ├── fzf-lua.lua
@@ -54,9 +54,11 @@ nvim   # 首次启动自动安装插件（有一次确认提示）
 
 ```bash
 # debian 13
-sudo apt install git gcc fzf ripgrep clangd lua-language-server
+sudo apt install git gcc fzf ripgrep clangd lua-language-server tree-sitter-cli
 # fedora 44
-sudo dnf install git gcc fzf ripgrep clang-tools-extra lua-language-server
+sudo dnf install git gcc fzf ripgrep clang-tools-extra lua-language-server tree-sitter-cli
+# macos（git/clangd 随 xcode command line tools 自带）
+brew install fzf ripgrep tree-sitter lua-language-server pyright
 # python lsp（任选其一；会带入 nodejs）
 sudo apt install pyright 2>/dev/null || pip install pyright
 ```
@@ -121,20 +123,14 @@ bpftrace 脚本没有 LSP，当普通文本处理。
 | explorer | `<leader>e` 文件管理器 |
 | terminal | `<C->` 面板开关 · `<leader>tn` 新建 shell · `<leader>t]`/`<leader>t[` 切换 · `<leader>tx` 关闭 · `<leader>tr` 重跑任务 · `:TermRun`/`:T` 委托命令 |
 
-## 验证清单
-
-- [ ] `nvim --version` ≥ 0.12
-- [ ] 打开 `.c` 文件有高亮；`gd` 跳定义、`K` 浮窗文档、`grr` 找引用
-- [ ] 输入触发补全弹窗，文档自动展开
-- [ ] `<leader>ff` / `<leader>fg` / `<leader>fb` 正常
-- [ ] `<leader>e` 打开文件管理器；`]b` `[b` 切换 buffer 标签
-- [ ] SSH 会话里 `y` 复制能进本地剪贴板（OSC52）
-- [ ] `:checkhealth vim.lsp` 全绿
-
 ## 常见问题
 
-- **blink.cmp 模糊匹配器下载失败**（网络受限）：`plugins.lua` 里 `fuzzy.implementation` 改 `'lua'`
-- **treesitter parser 编译失败**：缺 `gcc`，装上面的系统依赖
+- **blink.cmp rust 模糊匹配库缺失**：跟随 main 时预编译库按需从 GitHub releases
+  下载（无需工具链，见 `lua/plugins/blink.cmp.lua` 里的 `blink.download({ match = '*' })`）；
+  下载受限时静默回落到纯 Lua 匹配器
+- **treesitter parser 编译失败**：`main` 分支靠 `tree-sitter` CLI（>= 0.25）加 C 编译器编译 parser，
+  装上面的系统依赖；发行版源里的 `tree-sitter-cli` 版本太旧时，改用
+  `cargo install tree-sitter-cli` 或 `npm i -g tree-sitter-cli`
 - **图标显示为方块**：在终端里跑 `printf '\ue0b0 \uf07b \uf15b\n'`。
   这里也是方块 → *本地*终端字体不是 nerd font（本地装 Maple Mono NF CN 并在终端 profile 里选中）；
   字形正常 → 是配置问题，报回来。
