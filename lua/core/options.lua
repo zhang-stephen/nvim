@@ -62,6 +62,8 @@ options.setup = function()
     -- OSC52 clipboard: the terminal emulator (local or over ssh) writes yanks
     -- to the system clipboard; works anywhere the terminal supports it
     vim.g.clipboard = 'osc52'
+    -- route every yank/delete/paste through the + register, i.e. osc52 above
+    vim.o.clipboard = 'unnamedplus'
 
     -- diagnostics appearance: nerd font signs instead of the default E/W/I/H letters
     vim.diagnostic.config({
