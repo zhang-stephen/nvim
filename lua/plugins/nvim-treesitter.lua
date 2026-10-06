@@ -2,9 +2,10 @@
 -- parsers compile locally, so gcc is required on each host
 
 return function()
-    -- availability guard: skip quietly while plugins are not installed yet (first run)
+    -- availability guard: warn + skip while the plugin is not installed yet (first run)
     local ok, ts = pcall(require, 'nvim-treesitter')
     if not ok then
+        vim.notify(('nvim-treesitter unavailable, setup skipped: %s'):format(ts), vim.log.levels.WARN)
         return
     end
     ts.setup({})

@@ -3,9 +3,10 @@
 -- *local* terminal (maple mono nf cn), remote hosts over ssh need nothing
 
 return function()
-    -- availability guard: skip quietly while plugins are not installed yet (first run)
+    -- availability guard: warn + skip while the plugin is not installed yet (first run)
     local ok = pcall(require, 'mini.icons')
     if not ok then
+        vim.notify('mini.nvim unavailable, setup skipped', vim.log.levels.WARN)
         return
     end
 

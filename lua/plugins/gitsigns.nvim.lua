@@ -3,9 +3,10 @@
 -- statusline branch data and the :Git wrapper
 
 return function()
-    -- availability guard: skip quietly while plugins are not installed yet (first run)
+    -- availability guard: warn + skip while the plugin is not installed yet (first run)
     local ok, gitsigns = pcall(require, 'gitsigns')
     if not ok then
+        vim.notify(('gitsigns unavailable, setup skipped: %s'):format(gitsigns), vim.log.levels.WARN)
         return
     end
     gitsigns.setup({

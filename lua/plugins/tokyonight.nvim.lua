@@ -3,5 +3,8 @@
 -- the availability check for the not-installed-yet case
 
 return function()
-    pcall(vim.cmd.colorscheme, 'tokyonight')
+    local ok = pcall(vim.cmd.colorscheme, 'tokyonight')
+    if not ok then
+        vim.notify('tokyonight unavailable, colorscheme unchanged', vim.log.levels.WARN)
+    end
 end
